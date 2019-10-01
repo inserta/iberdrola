@@ -6,9 +6,9 @@
       <div class="atras">
         <span *ngIf="paso > 1 && paso < 5 || paso == 0" (click)="atras()">{{ 'HUESPED.ATRAS' | translate }}</span>
       </div>
-      <div *ngIf="paso < 5" class="omitir" (click)="close()">
+      <!-- <div *ngIf="paso < 5" class="omitir" (click)="close()">
         {{ 'HUESPED.OMITIR' | translate }}
-      </div>
+      </div> -->
     </div>
 
     <!-- TITULO -->
@@ -24,7 +24,7 @@
     </div>
 
     <!-- ELEJIR TIPO DOCUMENTO -->
-    <div class="opciones" *ngIf="paso==1">
+    <!-- <div class="opciones" *ngIf="paso==1">
       <ion-list radio-group [(ngModel)]="tipoDoc" class="radio-group">
         <ion-list-header>
           {{ 'HUESPED.ELEGIR_TIPO_DOC' | translate }}
@@ -41,7 +41,20 @@
           </ion-item>
         </div>
       </ion-list>
-    </div>
+    </div> -->
+    
+    <ion-list class="opciones" *ngIf="paso==1">
+      <ion-item class="select">
+        {{ 'HUESPED.ELEGIR_TIPO_DOC' | translate }}
+      </ion-item>
+      <ion-item class="select">
+        <ion-select class="centrado" [(ngModel)]="tipoDoc" okText="Aceptar" cancelText="Cancelar">
+          <ion-option value="dni">{{ 'HUESPED.DNI' | translate }}</ion-option>
+          <ion-option value="pasaporte">{{ 'HUESPED.PASAPORTE' | translate }}</ion-option>
+          <ion-option value="empleado">{{ 'HUESPED.EMPLEADO' | translate }}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
 
     <!-- MUESTRA IMÁGENES ESCANEADAS -->
     <div class="imagenes {{paso==3?'extendida':''}}" *ngIf="paso > 1 && paso < 4">
@@ -71,6 +84,14 @@
           *ngIf="paso>1 && photosPassport[0]" />
         <div class="actualiza" *ngIf="paso==3">
           <input title="" type="file" accept="image/*" (change)="getFiles($event,3, 3)">
+          {{ 'HUESPED.CAMBIAR' | translate }}
+        </div>
+      </div>
+      <div class="img {{paso==3?'extendida':''}}" *ngIf="tipoDoc=='empleado'">
+        <img (click)="visualizaFoto(myImage4)" #myImage3 [src]="photosEmpleado[0]" width="150" height="105"
+          *ngIf="paso>1 && photosEmpleado[0]" />
+        <div class="actualiza" *ngIf="paso==3">
+          <input title="" type="file" accept="image/*" (change)="getFiles($event,4, 3)">
           {{ 'HUESPED.CAMBIAR' | translate }}
         </div>
       </div>
@@ -107,6 +128,16 @@
         <div class="boton">
           <input id="pasaporte1" title="" type="file" accept="image/*" (click)="resetFile('pasaporte1')"
             (change)="getFiles($event,3)">
+          <img src="../../assets/imgs/registro/scan.png" width="80" height="80" />
+        </div>
+      </div>
+      <div class="escaneo" *ngIf="paso==1 && tipoDoc=='empleado'">
+        <div class="info">
+          {{ 'HUESPED.ESCANER_EMPLEADO' | translate }}
+        </div>
+        <div class="boton">
+          <input id="empleado1" title="" type="file" accept="image/*" (click)="resetFile('empleado1')"
+            (change)="getFiles($event,4)">
           <img src="../../assets/imgs/registro/scan.png" width="80" height="80" />
         </div>
       </div>

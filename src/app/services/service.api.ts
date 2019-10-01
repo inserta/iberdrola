@@ -644,6 +644,22 @@ export class ServiceAPI extends AbstractService {
 			});
 	}
 
+	public crearOcrEmpleado(text) {
+
+		let body = {
+			text: text
+		}
+
+		return this.makePost('https://booking.becheckin.com/ocr/iberdrola/empleado', body)
+			.then(res => {
+				return Promise.resolve(res);
+			})
+			.catch(error => {
+				console.log('Error: ' + error);
+				return Promise.reject(error);
+			});
+	}
+
 	// Fin métodos OCR
 
 }

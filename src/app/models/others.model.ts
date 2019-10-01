@@ -45,3 +45,9 @@ export class DatosPasaporte {
     nacimiento: string;
     expedicion: string;
 }
+
+export class DatosEmpleado {
+    nombre: string;
+    apellidos: string;
+    documento: string;
+}
