@@ -35,7 +35,44 @@ export class ServiceAPI extends AbstractService {
 		private _storage: StorageService,
 		private _events: Events) {
 		super(_http, _storage, _events)
+		//this.setHeaderslocks();
 	}
+
+
+	// china
+/*
+	setHeaderslocks(token) {
+	 	const h = 'bearer' + token;
+		this.headers.append('Authorization', h);
+		this.headers.append('Content-Type', 'application/json');
+	}
+*/
+	accesstoken() {
+ 
+		const url = 'https://booking.becheckin.com/accessToken';
+	
+		return this._http.post(url, '')
+				   .map( res =>  res.json());
+	
+	  }
+
+	openChina(token, lock) {
+		
+			const url = 'https://booking.becheckin.com/chinaOpen';
+		
+			const body = {
+			  lock: lock,
+			  token: token
+			};
+		
+			return this._http.post(url, body)
+					   .map( res => res.json());
+		
+	}
+
+
+	// fin china
+
 
 	public subirArchivo(body) {
 		return this._http.post('https://dashboard.becheckin.com/php/fileUploadHotel.php', body)

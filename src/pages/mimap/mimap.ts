@@ -414,6 +414,7 @@ export class MimapPage {
 
   connectToDevice(tipo, procede) {
 
+    
     this.esChina = false;
     this.dispositivoActual = tipo;
     let mensaje = '';
@@ -448,15 +449,23 @@ export class MimapPage {
       this.esChina = true;
     }
 
+    if (this.codeUno == '$$$$$') {
+      //this.esPlatillo = true;
+    }
+
     this.apiComponents.createLoadingWithMessage(mensaje).then((loading: Loading) => {
       loading.present();
       if (this.esChina) {
-        this.vm.myloading = loading;
+        //this.vm.myloading = loading;
         //this.openChina(loading)
       } else {
         if ((this.codeUno == "-----") && (procede == 0)) {
           console.log('abriendo por wifi')
           this.openWifi(loading, tipo);
+
+        } else if ((this.codeUno == "$$$$$") && (procede == 0)) {
+          console.log('abriendo por Platillo')
+          this.openPlatillo(loading, this.name); 
 
         } else {
           console.log('aqui');
@@ -466,6 +475,34 @@ export class MimapPage {
     });
 
   }
+
+  openPlatillo(loading, name) {
+    this.sapi.accesstoken().subscribe(token => {
+        let mtoken = token.access_token;
+        //this.toastr.success('Token obtenido con éxito', 'Obtener Token');
+        
+        console.log(mtoken);
+        // abrimos platillo
+        this.sapi.openChina(mtoken, this.name).subscribe(res => {
+          console.log('res: ', res);
+          loading.dismiss();
+    
+    
+      }, err => {
+          //this.toastr.warning('Error obtener codigo', 'Obtener Código');
+          console.log(err.message);
+          loading.dismiss()
+      });
+  
+  
+    }, err => {
+        //this.toastr.warning('Error obtener token', 'Obtener Ticket');
+        console.log(err.message);
+    });
+  }
+
+
+  
 
   private checkBluetooth(loading, device) {
     /*
