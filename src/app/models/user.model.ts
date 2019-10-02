@@ -127,6 +127,7 @@ export class FastCheckin {
     tipoDoc: string;
     imagenes: any = [];
     province: string;
+    tarjeta: Tarjeta;
     
 
     constructor() {
@@ -148,5 +149,20 @@ export class FastCheckin {
         this.signature = '';
         this.imagenes = [];
         this.province = '';
+        this.tarjeta = new Tarjeta();
+    }
+}
+
+export class Tarjeta {
+    numero: string;
+    mes: number;
+    anyo: number;
+    cvc: number;
+
+    constructor(){
+        this.numero = '';
+        this.mes = null;
+        this.anyo = null;
+        this.cvc = null;
     }
 }

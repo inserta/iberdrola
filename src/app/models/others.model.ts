@@ -8,6 +8,10 @@ export class ErroresFormularioRegistro{
     fechaNacimiento: string;
     sexo: string;
     nacionalidad: string;
+    tarjeta_numero: string;
+    tarjeta_anyo: string;
+    tarjeta_mes: string;
+    tarjeta_cvc: string;
     tieneErrores: boolean;
 }
 
