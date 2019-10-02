@@ -1,5 +1,5 @@
 
-import { FastCheckin } from './../../app/models/user.model';
+import { FastCheckin, Tarjeta } from './../../app/models/user.model';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { IonicPage, Content, Loading, NavController, NavParams, Toast, Events, ModalController, ViewController, Platform } from 'ionic-angular';
 import { User } from '../../app/models/user.model';
@@ -1395,6 +1395,7 @@ export class ChangeUserPage {
     this.fastcheckin.birthday = this.user.guest.fastcheckin.birthday;
     this.fastcheckin.sex = this.user.guest.fastcheckin.sex;
     this.fastcheckin.nationality = this.user.guest.fastcheckin.nationality;
+    this.fastcheckin.tarjeta = new Tarjeta();
   }
 
 
@@ -1473,6 +1474,7 @@ export class ChangeUserPage {
     this.user.guest.fastcheckin.sex = this.fastcheckin.sex;
     this.user.guest.fastcheckin.nationality = this.fastcheckin.nationality;
     this.user.guest.fastcheckin.province = this.fastcheckin.province ? this.fastcheckin.province : '';
+    this.user.guest.fastcheckin.tarjeta = this.fastcheckin.tarjeta;
     this.existFastcheckin = true;
     let pasoAnterior = new PasoAnterior();
     pasoAnterior.paso = this.paso;
@@ -1493,7 +1495,7 @@ export class ChangeUserPage {
         this.erroresRegistroManual.numIdentificacion = "obligatorio";
         result = false;
       }
-    } else if (this.fastcheckin.typeOfDocument == "E"){
+    } else if (this.fastcheckin.typeOfDocument == "E") {
       if (!this.fastcheckin.documento) {
         this.erroresRegistroManual.numIdentificacion = "obligatorio";
         result = false;
@@ -1530,6 +1532,22 @@ export class ChangeUserPage {
     }
     if (!this.fastcheckin.nationality && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.nacionalidad = "obligatorio";
+      result = false;
+    }
+    if (!this.fastcheckin.tarjeta.numero && this.fastcheckin.typeOfDocument != "E") {
+      this.erroresRegistroManual.tarjeta_numero = "obligatorio";
+      result = false;
+    }
+    if (!this.fastcheckin.tarjeta.mes && this.fastcheckin.typeOfDocument != "E") {
+      this.erroresRegistroManual.tarjeta_mes = "obligatorio";
+      result = false;
+    }
+    if (!this.fastcheckin.tarjeta.anyo && this.fastcheckin.typeOfDocument != "E") {
+      this.erroresRegistroManual.tarjeta_anyo = "obligatorio";
+      result = false;
+    }
+    if (!this.fastcheckin.tarjeta.cvc && this.fastcheckin.typeOfDocument != "E") {
+      this.erroresRegistroManual.tarjeta_cvc = "obligatorio";
       result = false;
     }
     // FGV: Comprobación fecha expedición y fecha de nacimiento:
@@ -1602,6 +1620,18 @@ export class ChangeUserPage {
         break;
       case "nacionalidad":
         this.erroresRegistroManual.nacionalidad = "";
+        break;
+      case "tarjeta_numero":
+        this.erroresRegistroManual.tarjeta_numero = "";
+        break;
+      case "tarjeta_anyo":
+        this.erroresRegistroManual.tarjeta_anyo = "";
+        break;
+      case "tarjeta_mes":
+        this.erroresRegistroManual.tarjeta_mes = "";
+        break;
+      case "tarjeta_cvc":
+        this.erroresRegistroManual.tarjeta_cvc = "";
         break;
 
       default:

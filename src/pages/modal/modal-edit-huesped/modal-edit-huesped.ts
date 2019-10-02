@@ -1,5 +1,5 @@
 
-import { FastCheckin, Guest } from '../../../app/models/user.model';
+import { FastCheckin, Guest, Tarjeta } from '../../../app/models/user.model';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { IonicPage, Content, Loading, NavController, NavParams, Toast, Events, ModalController, ViewController, Platform } from 'ionic-angular';
 import { User } from './../../../app/models/user.model';
@@ -1451,6 +1451,7 @@ export class ModalEditHuesped {
     this.fastcheckin.sex = this.huesped.fastcheckin.sex;
     this.fastcheckin.nationality = this.huesped.fastcheckin.nationality;
     this.fastcheckin.province = this.huesped.fastcheckin.province;
+    this.fastcheckin.tarjeta = new Tarjeta();
     this.sigpad.fromDataURL(this.huesped.fastcheckin.signature, this.signaturePadOptions);
     this.signature = this.sigpad.toDataURL();
     this.drawStart();
@@ -1550,6 +1551,7 @@ export class ModalEditHuesped {
     this.user.guest.fastcheckin.sex = this.fastcheckin.sex;
     this.user.guest.fastcheckin.nationality = this.fastcheckin.nationality;
     this.user.guest.fastcheckin.province = this.fastcheckin.province;
+    this.user.guest.fastcheckin.tarjeta = this.fastcheckin.tarjeta;
 
   }
 
@@ -1604,6 +1606,22 @@ export class ModalEditHuesped {
     }
     if (!this.fastcheckin.nationality && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.nacionalidad = "obligatorio";
+      result = false;
+    }
+    if (!this.fastcheckin.tarjeta.numero && this.fastcheckin.typeOfDocument != "E") {
+      this.erroresRegistroManual.tarjeta_numero = "obligatorio";
+      result = false;
+    }
+    if (!this.fastcheckin.tarjeta.mes && this.fastcheckin.typeOfDocument != "E") {
+      this.erroresRegistroManual.tarjeta_mes = "obligatorio";
+      result = false;
+    }
+    if (!this.fastcheckin.tarjeta.anyo && this.fastcheckin.typeOfDocument != "E") {
+      this.erroresRegistroManual.tarjeta_anyo = "obligatorio";
+      result = false;
+    }
+    if (!this.fastcheckin.tarjeta.cvc && this.fastcheckin.typeOfDocument != "E") {
+      this.erroresRegistroManual.tarjeta_cvc = "obligatorio";
       result = false;
     }
 
@@ -1677,6 +1695,18 @@ export class ModalEditHuesped {
         break;
       case "nacionalidad":
         this.erroresRegistroManual.nacionalidad = "";
+        break;
+      case "tarjeta_numero":
+        this.erroresRegistroManual.tarjeta_numero = "";
+        break;
+      case "tarjeta_anyo":
+        this.erroresRegistroManual.tarjeta_anyo = "";
+        break;
+      case "tarjeta_mes":
+        this.erroresRegistroManual.tarjeta_mes = "";
+        break;
+      case "tarjeta_cvc":
+        this.erroresRegistroManual.tarjeta_cvc = "";
         break;
 
       default:

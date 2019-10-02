@@ -42,7 +42,7 @@
         </div>
       </ion-list>
     </div> -->
-    
+
     <ion-list class="opciones" *ngIf="paso==1">
       <ion-item class="select">
         {{ 'HUESPED.ELEGIR_TIPO_DOC' | translate }}
@@ -213,15 +213,9 @@
     <div class="fin_texto" *ngIf="paso == 5">
       {{ 'HUESPED.TEXTO_FIN' | translate }}
     </div>
-    <div class="fin_recordatorio" *ngIf="paso == 5 && tipoDoc!='empleado'">
-      {{ 'HUESPED.RECORDATORIO' | translate }}
-    </div>
     <div class="fin_botones" *ngIf="paso == 5">
       <div class="fin_boton" (click)="close()">
         {{ 'HUESPED.FINALIZAR' | translate }}
-      </div>
-      <div class="fin_boton_2" (click)="anotherGuest()" *ngIf="tipoDoc!='empleado'">
-        {{ 'HUESPED.NUEVO_REGISTRO' | translate }}
       </div>
     </div>
     <!-- FIN PASO 5 -->
@@ -235,15 +229,14 @@
           <p>{{ 'HUESPED.REGISTRO_MANUAL.EXPLICACIONSUCCESS' | translate }}</p>
 
         </div>
-        
+
         <div class="item identifier" *ngIf="fastcheckin.typeOfDocument=='E'">
           <label for="identifier"><span>{{ 'HUESPED.REGISTRO_MANUAL.NUM_IDENTIFICACION' | translate }}</span> <span
               class="label_error"
               *ngIf="erroresRegistroManual.numIdentificacion=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
           <input id="identifier" type="text"
             class="{{erroresRegistroManual.numIdentificacion || fastcheckin.documento=='' ? 'error' : ''}}"
-            [(ngModel)]="fastcheckin.documento"
-            (ngModelChange)="modificaCampoRegistroManual('numIdentificacion')" />
+            [(ngModel)]="fastcheckin.documento" (ngModelChange)="modificaCampoRegistroManual('numIdentificacion')" />
         </div>
         <div class="item identifier" *ngIf="fastcheckin.typeOfDocument=='D'">
           <label for="identifier"><span>{{ 'HUESPED.REGISTRO_MANUAL.NUM_IDENTIFICACION' | translate }}</span> <span
@@ -308,7 +301,9 @@
 
           <label for="sex"><span>{{ 'HUESPED.REGISTRO_MANUAL.SEXO' | translate }}</span> <span class="label_error"
               *ngIf="erroresRegistroManual.sexo=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-          <select id="sex" class="{{(erroresRegistroManual.sexo || fastcheckin.sex =='') && tipoDoc!='empleado' ? 'error' : ''}}" [(ngModel)]="fastcheckin.sex" (ngModelChange)="cambiarSexo($event)">
+          <select id="sex"
+            class="{{(erroresRegistroManual.sexo || fastcheckin.sex =='') && tipoDoc!='empleado' ? 'error' : ''}}"
+            [(ngModel)]="fastcheckin.sex" (ngModelChange)="cambiarSexo($event)">
             <option *ngFor="let option of tiposSexo.opciones" [ngValue]="option.id">
               {{option.name}} </option>
           </select>
@@ -326,6 +321,55 @@
           <label for="province"><span>{{ 'HUESPED.REGISTRO_MANUAL.PROVINCIA' | translate }}</span></label>
           <input id="province" type="text" [(ngModel)]="fastcheckin.province" />
         </div>
+
+        <!-- Datos de pago con tarjeta sólo para clientes que no sean socios -->
+        <ion-card *ngIf="user.guest.fastcheckin.typeOfDocument!='E'">
+          <ion-item>
+              <ion-label class="title_card">{{ 'HUESPED.REGISTRO_MANUAL.DATOS_PAGO' | translate }}</ion-label>
+          </ion-item>
+          <ion-item>
+            <div class="item_tarjeta tarjeta_numero">
+              <label for="tarjeta"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_NUMERO' | translate }}</span> <span
+                  class="label_error"
+                  *ngIf="erroresRegistroManual.tarjeta_numero=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
+              <input id="tarjeta" type="text"
+                class="{{(erroresRegistroManual.tarjeta_numero || fastcheckin.tarjeta.numero=='') ? 'error' : ''}}"
+                [(ngModel)]="fastcheckin.tarjeta.numero"
+                (ngModelChange)="modificaCampoRegistroManual('tarjeta_numero')" />
+            </div>
+          </ion-item>
+          <ion-item>
+            <div class="item_tarjeta tarjeta_anyo">
+              <label for="tarjeta"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_ANYO' | translate }}</span> <span
+                  class="label_error"
+                  *ngIf="erroresRegistroManual.tarjeta_anyo=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
+              <input id="tarjeta" type="number"
+                class="{{(erroresRegistroManual.tarjeta_anyo || fastcheckin.tarjeta.anyo==null) ? 'error' : ''}}"
+                [(ngModel)]="fastcheckin.tarjeta.anyo" (ngModelChange)="modificaCampoRegistroManual('tarjeta_anyo')" />
+            </div>
+          </ion-item>
+          <ion-item>
+            <div class="item_tarjeta tarjeta_mes">
+              <label for="tarjeta"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_MES' | translate }}</span> <span
+                  class="label_error"
+                  *ngIf="erroresRegistroManual.tarjeta_mes=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
+              <input id="tarjeta" type="number"
+                class="{{(erroresRegistroManual.tarjeta_mes || fastcheckin.tarjeta.mes==null) ? 'error' : ''}}"
+                [(ngModel)]="fastcheckin.tarjeta.mes" (ngModelChange)="modificaCampoRegistroManual('tarjeta_mes')" />
+            </div>
+          </ion-item>
+          <ion-item>
+            <div class="item_tarjeta tarjeta_cvc">
+              <label for="tarjeta"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_CVC' | translate }}</span> <span
+                  class="label_error"
+                  *ngIf="erroresRegistroManual.tarjeta_cvc=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
+              <input id="tarjeta" type="number"
+                class="{{(erroresRegistroManual.tarjeta_cvc || fastcheckin.tarjeta.cvc==null) ? 'error' : ''}}"
+                [(ngModel)]="fastcheckin.tarjeta.cvc" (ngModelChange)="modificaCampoRegistroManual('tarjeta_cvc')" />
+            </div>
+          </ion-item>
+        </ion-card>
+
         <div class="boton_continuar">
           <button class="{{erroresRegistroManual.tieneErrores ? 'boton_error' : ''}}"
             (click)="guardarDatosManuales()">{{ 'HUESPED.REGISTRO_MANUAL.CONTINUAR' | translate }}</button>
