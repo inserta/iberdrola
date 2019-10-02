@@ -124,7 +124,7 @@ export class ModalEditHuesped {
     opciones: [
       { id: 'D', name: this.translate.instant("HUESPED.REGISTRO_MANUAL.DNI") },
       { id: 'P', name: this.translate.instant("HUESPED.REGISTRO_MANUAL.PASAPORTE") },
-      { id: 'E', name: this.translate.instant("HUESPED.HUESPED.EMPLEADO") }
+      { id: 'E', name: this.translate.instant("HUESPED.EMPLEADO") }
     ]
   };
   tiposSexo = {
@@ -1594,15 +1594,15 @@ export class ModalEditHuesped {
       result = false;
     }*/
 
-    if (!this.fastcheckin.birthday) {
+    if (!this.fastcheckin.birthday && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.fechaNacimiento = "obligatorio";
       result = false;
     }
-    if (!this.fastcheckin.sex) {
+    if (!this.fastcheckin.sex && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.sexo = "obligatorio";
       result = false;
     }
-    if (!this.fastcheckin.nationality) {
+    if (!this.fastcheckin.nationality && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.nacionalidad = "obligatorio";
       result = false;
     }
@@ -1611,7 +1611,7 @@ export class ModalEditHuesped {
     // FEcha expedición franja :   30 años atrás y tope fecha checkin
     // Fecha de nacimiento:  100 años atrás y tope fecha checkin
     // CONTROL FECHA DE EXPEDICIÓN:
-    if (this.fastcheckin.date_exp) {
+    if (this.fastcheckin.date_exp && this.fastcheckin.typeOfDocument != "E") {
       let fechainicio_checkin = this.storageService.getPeriodReserve();
       fechainicio_checkin = JSON.parse(fechainicio_checkin);
       fechainicio_checkin = new Date(fechainicio_checkin.start);
@@ -1628,7 +1628,7 @@ export class ModalEditHuesped {
       }
     }
     // CONTROL FECHA DE NACIMIENTO:
-    if (this.fastcheckin.birthday) {
+    if (this.fastcheckin.birthday && this.fastcheckin.typeOfDocument != "E") {
       let fechainicio_checkin = this.storageService.getPeriodReserve();
       fechainicio_checkin = JSON.parse(fechainicio_checkin);
       fechainicio_checkin = new Date(fechainicio_checkin.start);

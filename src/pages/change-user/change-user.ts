@@ -1520,15 +1520,15 @@ export class ChangeUserPage {
     //   this.erroresRegistroManual.apellido2 = "obligatorio";
     //   result = false;
     // }
-    if (!this.fastcheckin.birthday) {
+    if (!this.fastcheckin.birthday && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.fechaNacimiento = "obligatorio";
       result = false;
     }
-    if (!this.fastcheckin.sex) {
+    if (!this.fastcheckin.sex && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.sexo = "obligatorio";
       result = false;
     }
-    if (!this.fastcheckin.nationality) {
+    if (!this.fastcheckin.nationality && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.nacionalidad = "obligatorio";
       result = false;
     }
@@ -1536,7 +1536,7 @@ export class ChangeUserPage {
     // FEcha expedición franja :   30 años atrás y tope fecha checkin
     // Fecha de nacimiento:  100 años atrás y tope fecha checkin
     // CONTROL FECHA DE EXPEDICIÓN:
-    if (this.fastcheckin.date_exp) {
+    if (this.fastcheckin.date_exp && this.fastcheckin.typeOfDocument != "E") {
       let fechainicio_checkin = this.storageService.getPeriodReserve();
       fechainicio_checkin = JSON.parse(fechainicio_checkin);
       fechainicio_checkin = new Date(fechainicio_checkin.start);
@@ -1553,7 +1553,7 @@ export class ChangeUserPage {
       }
     }
     // CONTROL FECHA DE NACIMIENTO:
-    if (this.fastcheckin.birthday) {
+    if (this.fastcheckin.birthday && this.fastcheckin.typeOfDocument != "E") {
       let fechainicio_checkin = this.storageService.getPeriodReserve();
       fechainicio_checkin = JSON.parse(fechainicio_checkin);
       fechainicio_checkin = new Date(fechainicio_checkin.start);

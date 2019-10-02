@@ -301,14 +301,14 @@
               class="label_error"
               *ngIf="erroresRegistroManual.fechaNacimiento=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
           <input id="birthday" type="date"
-            class="{{erroresRegistroManual.fechaNacimiento || fastcheckin.birthday=='' ? 'error' : ''}}"
+            class="{{(erroresRegistroManual.fechaNacimiento || fastcheckin.birthday=='') && tipoDoc!='empleado' ? 'error' : ''}}"
             [(ngModel)]="fastcheckin.birthday" (ngModelChange)="modificaCampoRegistroManual('fechaNacimiento')" />
         </div>
         <div class="item sex">
 
           <label for="sex"><span>{{ 'HUESPED.REGISTRO_MANUAL.SEXO' | translate }}</span> <span class="label_error"
               *ngIf="erroresRegistroManual.sexo=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-          <select id="sex" class="{{erroresRegistroManual.sexo || fastcheckin.sex =='' ? 'error' : ''}}" [(ngModel)]="fastcheckin.sex" (ngModelChange)="cambiarSexo($event)">
+          <select id="sex" class="{{(erroresRegistroManual.sexo || fastcheckin.sex =='') && tipoDoc!='empleado' ? 'error' : ''}}" [(ngModel)]="fastcheckin.sex" (ngModelChange)="cambiarSexo($event)">
             <option *ngFor="let option of tiposSexo.opciones" [ngValue]="option.id">
               {{option.name}} </option>
           </select>
@@ -319,7 +319,7 @@
               class="label_error"
               *ngIf="erroresRegistroManual.nacionalidad=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
           <input id="nationality" type="text"
-            class="{{erroresRegistroManual.nacionalidad || fastcheckin.nationality=='' ? 'error' : ''}}"
+            class="{{(erroresRegistroManual.nacionalidad || fastcheckin.nationality=='') && tipoDoc!='empleado' ? 'error' : ''}}"
             [(ngModel)]="fastcheckin.nationality" (ngModelChange)="modificaCampoRegistroManual('nacionalidad')" />
         </div>
         <div class="item province">
