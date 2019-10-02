@@ -547,6 +547,20 @@ export class ChangeUserPage {
           alert.present();
         }*/
       }
+    } else if (this.user.guest.fastcheckin && this.user.guest.fastcheckin.typeOfDocument == 'E') {
+
+      this.existFastcheckin = true;
+      this.fastcheckinSuccess = true;
+
+      if (this.paso != 3) {
+        let pasoAnterior = new PasoAnterior();
+        pasoAnterior.paso = this.paso;
+        pasoAnterior.progreso = this.progreso;
+        this.pasosAnteriores.push(pasoAnterior);
+        this.paso = 3
+        this.progreso = "33\%";
+      }
+
     } else {
       if (this.user.guest.fastcheckin
         && this.user.guest.fastcheckin.birthday != ""
@@ -787,7 +801,7 @@ export class ChangeUserPage {
                 this.serviceAPI.crearOcrEmpleado(res.text).then(respuestaEmpleado => {
                   this.typeDocument = 'E';
                   if (!respuestaEmpleado.error) {
-                    this.datosDniTrasero = respuestaEmpleado;
+                    this.datosEmpleado = respuestaEmpleado;
                   }
                   this.recognizeEmpleadoText(loading);
                 });
@@ -1224,12 +1238,12 @@ export class ChangeUserPage {
     this.comprobardatos();
 
   }
-  
+
   private recognizeEmpleadoText(loading: Loading) {
 
     this.user.guest.fastcheckin.name = this.datosEmpleado.nombre;
     this.user.guest.fastcheckin.surnameOne = this.datosEmpleado.apellidos;
-    this.user.guest.fastcheckin.dni.identifier = this.datosEmpleado.documento;
+    this.user.guest.fastcheckin.documento = this.datosEmpleado.documento;
     loading.dismiss();
     this.comprobardatos();
 
@@ -1361,7 +1375,7 @@ export class ChangeUserPage {
     // Volcamos los datos obtenidos en el fastcheckin en caso de éxito:
     this.activarFormularioManual();
     this.vuelcaDatosFastcheckin();
-    if (this.tipoDoc == 'pasaporte') {
+    if (this.tipoDoc == 'pasaporte' || this.tipoDoc == 'empleado') {
       this.progreso = "66\%";
     } else {
       this.progreso = "75\%";
@@ -1373,6 +1387,7 @@ export class ChangeUserPage {
 
     this.fastcheckin.dni.identifier = this.user.guest.fastcheckin.dni.identifier;
     this.fastcheckin.passport.identifier = this.user.guest.fastcheckin.passport.identifier;
+    this.fastcheckin.documento = this.user.guest.fastcheckin.documento;
     this.fastcheckin.date_exp = this.user.guest.fastcheckin.date_exp;
     this.fastcheckin.name = this.user.guest.fastcheckin.name;
     this.fastcheckin.surnameOne = this.user.guest.fastcheckin.surnameOne;
@@ -1393,7 +1408,21 @@ export class ChangeUserPage {
     this.progreso = "50\%";
     this.fastcheckin = new FastCheckin();
     this.erroresRegistroManual = new ErroresFormularioRegistro();
-    this.fastcheckin.typeOfDocument = (this.tipoDoc == 'dni') ? 'D' : 'P';
+    switch (this.tipoDoc) {
+      case 'dni':
+        this.fastcheckin.typeOfDocument = 'D';
+        break;
+      case 'pasaporte':
+        this.fastcheckin.typeOfDocument = 'P';
+        break;
+      case 'empleado':
+        this.fastcheckin.typeOfDocument = 'E';
+        break;
+
+      default:
+        this.fastcheckin.typeOfDocument = 'D';
+        break;
+    }
     this.fastcheckin.sex = "M";
     //Generamos un código aleatorio de 20 caracteres.
     let cadena = this.globalService.generarCadenaAleatoria(20);
@@ -1464,13 +1493,18 @@ export class ChangeUserPage {
         this.erroresRegistroManual.numIdentificacion = "obligatorio";
         result = false;
       }
+    } else if (this.fastcheckin.typeOfDocument == "E"){
+      if (!this.fastcheckin.documento) {
+        this.erroresRegistroManual.numIdentificacion = "obligatorio";
+        result = false;
+      }
     } else {
       if (!this.fastcheckin.passport.identifier) {
         this.erroresRegistroManual.numIdentificacion = "obligatorio";
         result = false;
       }
     }
-    if (!this.fastcheckin.date_exp) {
+    if (!this.fastcheckin.date_exp && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.fechaExpedicion = "obligatorio";
       result = false;
     }
@@ -1592,6 +1626,7 @@ export class ChangeUserPage {
   }
   cambiarSexo(tipoSexo) {
     this.fastcheckin.sex = tipoSexo;
+    this.modificaCampoRegistroManual("sexo");
   }
 
   resetFile(id) {

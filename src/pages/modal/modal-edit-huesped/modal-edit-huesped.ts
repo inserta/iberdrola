@@ -21,7 +21,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import moment from 'moment';
 import { GlobalService } from './../../../app/services/globalService';
-import { ErroresFormularioRegistro, PasoAnterior, DatosDniFrontal, DatosDniTrasero, DatosPasaporte } from './../../../app/models/others.model';
+import { ErroresFormularioRegistro, PasoAnterior, DatosDniFrontal, DatosDniTrasero, DatosPasaporte, DatosEmpleado } from './../../../app/models/others.model';
 
 /**
  * Generated class for the ModalImagePage page.
@@ -60,8 +60,10 @@ export class ModalEditHuesped {
 
   public photosNif: any;
   public photosPassport: any;
+  public photosEmpleado: any;
   public photosNifSubida: any;
   public photosPassportSubida: any;
+  public photosEmpleadoSubida: any;
   public linksSubidos: any;
   public id_img: any;
   public subir_imagenes: boolean = false;
@@ -85,6 +87,7 @@ export class ModalEditHuesped {
   datosDniFrontal: DatosDniFrontal;
   datosDniTrasero: DatosDniTrasero;
   datosPasaporte: DatosPasaporte;
+  datosEmpleado: DatosEmpleado;
 
   @ViewChild('sigpad') sigpad: SignaturePad;
   @ViewChild('canvas') canvasElement: ElementRef;
@@ -120,7 +123,8 @@ export class ModalEditHuesped {
   tiposDocumentos = {
     opciones: [
       { id: 'D', name: this.translate.instant("HUESPED.REGISTRO_MANUAL.DNI") },
-      { id: 'P', name: this.translate.instant("HUESPED.REGISTRO_MANUAL.PASAPORTE") }
+      { id: 'P', name: this.translate.instant("HUESPED.REGISTRO_MANUAL.PASAPORTE") },
+      { id: 'E', name: this.translate.instant("HUESPED.HUESPED.EMPLEADO") }
     ]
   };
   tiposSexo = {
@@ -204,10 +208,12 @@ export class ModalEditHuesped {
     // Inicializamos los arrays que contendrán las imagenes en B64 para mostrar:
     this.photosNif = [];
     this.photosPassport = [];
+    this.photosEmpleado = [];
 
     // Inicializamos los arrays que contendrán las imagenes tal y como vienen para enviar:
     this.photosNifSubida = [];
     this.photosPassportSubida = [];
+    this.photosEmpleadoSubida = [];
 
 
     this.vuelcaPhotosRecuperadas();
@@ -215,14 +221,14 @@ export class ModalEditHuesped {
     this.inicializaDatosHuesped();
   }
 
-  
-  private inicializaDatosHuesped(){
+
+  private inicializaDatosHuesped() {
     this.datosDniFrontal = new DatosDniFrontal();
     this.datosDniFrontal.nombre = "";
     this.datosDniFrontal.pais = "";
     this.datosDniFrontal.apellido1 = "";
     this.datosDniFrontal.apellido2 = "";
-    
+
     this.datosDniTrasero = new DatosDniTrasero();
     this.datosDniTrasero.nombre = "";
     this.datosDniTrasero.pais = "";
@@ -232,7 +238,7 @@ export class ModalEditHuesped {
     this.datosDniTrasero.expedicion = "";
     this.datosDniTrasero.nacimiento = "";
     this.datosDniTrasero.sexo = "";
-    
+
     this.datosPasaporte = new DatosPasaporte();
     this.datosPasaporte.nombre = "";
     this.datosPasaporte.pais = "";
@@ -250,7 +256,7 @@ export class ModalEditHuesped {
     this.user.guest = this.huesped;
     this.storageService.setUserData(this.user);
     this.serviceAPI.actualGuests = this.actualGuestCopy;
-    console.log("servicio huespedes: ",this.serviceAPI.actualGuests);
+    console.log("servicio huespedes: ", this.serviceAPI.actualGuests);
     this.viewCtrl.dismiss();
   }
 
@@ -596,6 +602,19 @@ export class ModalEditHuesped {
           alert.present();
         }*/
       }
+    } else if (this.user.guest.fastcheckin && this.user.guest.fastcheckin.typeOfDocument == 'E') {
+
+      this.existFastcheckin = true;
+      this.fastcheckinSuccess = true;
+
+      if (this.paso != 3) {
+        let pasoAnterior = new PasoAnterior();
+        pasoAnterior.paso = this.paso;
+        pasoAnterior.progreso = this.progreso;
+        this.pasosAnteriores.push(pasoAnterior);
+        this.paso = 3
+        this.progreso = "33\%";
+      }
     } else {
       if (this.user.guest.fastcheckin
         && this.user.guest.fastcheckin.birthday != ""
@@ -816,10 +835,19 @@ export class ModalEditHuesped {
                 console.log('dni')
                 this.serviceAPI.crearOcrDniTrasero(res.text, this.datosDniFrontal).then(respuestaDniTrasero => {
                   this.typeDocument = 'D';
-                  if(!respuestaDniTrasero.error){
+                  if (!respuestaDniTrasero.error) {
                     this.datosDniTrasero = respuestaDniTrasero;
                   }
                   this.recognizeDNIText(loading);
+                });
+              } else if (this.tipoDoc == 'empleado') {
+                console.log('empleado');
+                this.serviceAPI.crearOcrEmpleado(res.text).then(respuestaEmpleado => {
+                  this.typeDocument = 'E';
+                  if (!respuestaEmpleado.error) {
+                    this.datosEmpleado = respuestaEmpleado;
+                  }
+                  this.recognizeEmpleadoText(loading);
                 });
               } else {
                 this.serviceAPI.crearOcrPasaporte(res.text).then(respuestaPasaporte => {
@@ -1264,6 +1292,16 @@ export class ModalEditHuesped {
     this.comprobardatos();
   }
 
+  private recognizeEmpleadoText(loading: Loading) {
+
+    this.user.guest.fastcheckin.name = this.datosEmpleado.nombre;
+    this.user.guest.fastcheckin.surnameOne = this.datosEmpleado.apellidos;
+    this.user.guest.fastcheckin.documento = this.datosEmpleado.documento;
+    loading.dismiss();
+    this.comprobardatos();
+
+  }
+
   _handleReaderLoaded(readerEvt) {
     var binaryString = readerEvt.target.result;
     this.filestring = btoa(binaryString);  // Converting binary string data.
@@ -1280,6 +1318,9 @@ export class ModalEditHuesped {
         break;
       case 3:
         this.photosPassport[0] = "data:image/jpeg;base64," + this.image;
+        this.analyze(this.image)
+      case 4:
+        this.photosEmpleado[0] = "data:image/jpeg;base64," + this.image;
         this.analyze(this.image)
     }
 
@@ -1302,6 +1343,10 @@ export class ModalEditHuesped {
       reader.readAsBinaryString(this.files[0]);
       reader.onload = this._handleReaderLoaded.bind(this);
       this.photosPassportSubida[0] = this.files[0];
+    } else if (id === 4) {
+      reader.readAsBinaryString(this.files[0]);
+      reader.onload = this._handleReaderLoaded.bind(this);
+      this.photosEmpleadoSubida[0] = this.files[0];
     }
 
   }
@@ -1397,6 +1442,7 @@ export class ModalEditHuesped {
     this.fastcheckin.typeOfDocument = this.huesped.fastcheckin.typeOfDocument;
     this.fastcheckin.dni.identifier = this.huesped.fastcheckin.dni.identifier;
     this.fastcheckin.passport.identifier = this.huesped.fastcheckin.passport.identifier;
+    this.fastcheckin.documento = this.user.guest.fastcheckin.documento;
     this.fastcheckin.date_exp = this.huesped.fastcheckin.date_exp;
     this.fastcheckin.name = this.huesped.fastcheckin.name;
     this.fastcheckin.surnameOne = this.huesped.fastcheckin.surnameOne;
@@ -1422,7 +1468,21 @@ export class ModalEditHuesped {
     this.progreso = "50\%";
     this.fastcheckin = new FastCheckin();
     this.erroresRegistroManual = new ErroresFormularioRegistro();
-    this.fastcheckin.typeOfDocument = (this.tipoDoc == 'dni') ? 'D' : 'P';
+    switch (this.tipoDoc) {
+      case 'dni':
+        this.fastcheckin.typeOfDocument = 'D';
+        break;
+      case 'pasaporte':
+        this.fastcheckin.typeOfDocument = 'P';
+        break;
+      case 'empleado':
+        this.fastcheckin.typeOfDocument = 'E';
+        break;
+
+      default:
+        this.fastcheckin.typeOfDocument = 'D';
+        break;
+    }
     this.fastcheckin.sex = "M";
     //Generamos un código aleatorio de 20 caracteres.
     let cadena = this.globalService.generarCadenaAleatoria(20);
@@ -1504,13 +1564,18 @@ export class ModalEditHuesped {
         this.erroresRegistroManual.numIdentificacion = "obligatorio";
         result = false;
       }
+    } else if (this.fastcheckin.typeOfDocument == "E") {
+      if (!this.fastcheckin.documento) {
+        this.erroresRegistroManual.numIdentificacion = "obligatorio";
+        result = false;
+      }
     } else {
       if (!this.fastcheckin.passport.identifier) {
         this.erroresRegistroManual.numIdentificacion = "obligatorio";
         result = false;
       }
     }
-    if (!this.fastcheckin.date_exp) {
+    if (!this.fastcheckin.date_exp && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.fechaExpedicion = "obligatorio";
       result = false;
     }
@@ -1636,6 +1701,7 @@ export class ModalEditHuesped {
   }
   cambiarSexo(tipoSexo) {
     this.fastcheckin.sex = tipoSexo;
+    this.modificaCampoRegistroManual("sexo");
   }
 
   resetFile(id) {

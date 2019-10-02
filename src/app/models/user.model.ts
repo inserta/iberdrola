@@ -108,6 +108,7 @@ export class FastCheckin {
     passport: {
         identifier: string;
     };
+    documento: string;
     name: string;
     surnameOne: string;
     surnameTwo: string;
@@ -136,6 +137,7 @@ export class FastCheckin {
         this.passport = {
             identifier: ''
         }
+        this.documento = '';
         this.name = '';
         this.surnameOne = '';
         this.surnameTwo = '';

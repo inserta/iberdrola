@@ -36,24 +36,18 @@
     </div>
 
     <!-- ELEJIR TIPO DOCUMENTO -->
-    <div class="opciones" *ngIf="paso==1">
-      <ion-list radio-group [(ngModel)]="tipoDoc" class="radio-group">
-        <ion-list-header>
-          {{ 'HUESPED.ELEGIR_TIPO_DOC' | translate }}
-        </ion-list-header>
-        <div class="en_linea">
-          <ion-item class="item item-block item-ios item-radio {{tipoDoc=='dni'? 'selected' : 'not_selected'}}">
-            <ion-label>{{ 'HUESPED.DNI' | translate }}</ion-label>
-            <ion-radio checked class="radio" value="dni"></ion-radio>
-          </ion-item>
-
-          <ion-item class="item item-block item-ios item-radio {{tipoDoc=='pasaporte'? 'selected' : 'not_selected'}}">
-            <ion-label>{{ 'HUESPED.PASAPORTE' | translate }}</ion-label>
-            <ion-radio class="radio" value="pasaporte" radio-inline></ion-radio>
-          </ion-item>
-        </div>
-      </ion-list>
-    </div>
+    <ion-list class="opciones" *ngIf="paso==1">
+      <ion-item class="select">
+        {{ 'HUESPED.ELEGIR_TIPO_DOC' | translate }}
+      </ion-item>
+      <ion-item class="select">
+        <ion-select class="centrado" [(ngModel)]="tipoDoc" okText="Aceptar" cancelText="Cancelar">
+          <ion-option value="dni">{{ 'HUESPED.DNI' | translate }}</ion-option>
+          <ion-option value="pasaporte">{{ 'HUESPED.PASAPORTE' | translate }}</ion-option>
+          <ion-option value="empleado">{{ 'HUESPED.EMPLEADO' | translate }}</ion-option>
+        </ion-select>
+      </ion-item>
+    </ion-list>
 
     <!-- MUESTRA IMÁGENES RECUPERADAS -->
 
@@ -141,6 +135,14 @@
           {{ 'HUESPED.CAMBIAR' | translate }}
         </div>
       </div>
+      <div class="img {{paso==3?'extendida':''}}" *ngIf="tipoDoc=='empleado'">
+        <img (click)="visualizaFoto(myImage4)" #myImage3 [src]="photosEmpleado[0]" width="150" height="105"
+          *ngIf="paso>1 && photosEmpleado[0]" />
+        <div class="actualiza" *ngIf="paso==3">
+          <input title="" type="file" accept="image/*" (change)="getFiles($event,4, 3)">
+          {{ 'HUESPED.CAMBIAR' | translate }}
+        </div>
+      </div>
     </div>
 
     <!-- FORMULARIO Y BOTONES -->
@@ -174,6 +176,16 @@
         <div class="boton">
           <input id="pasaporte1" title="" type="file" accept="image/*" (click)="resetFile('pasaporte1')"
             (change)="getFiles($event,3)">
+          <img src="../../assets/imgs/registro/scan.png" width="80" height="80" />
+        </div>
+      </div>
+      <div class="escaneo" *ngIf="paso==1 && tipoDoc=='empleado'">
+        <div class="info">
+          {{ 'HUESPED.ESCANER_EMPLEADO' | translate }}
+        </div>
+        <div class="boton">
+          <input id="empleado1" title="" type="file" accept="image/*" (click)="resetFile('empleado1')"
+            (change)="getFiles($event,4)">
           <img src="../../assets/imgs/registro/scan.png" width="80" height="80" />
         </div>
       </div>
@@ -268,12 +280,20 @@
           <label for="typeOfDocument"><span>{{ 'HUESPED.REGISTRO_MANUAL.TIPO_DOCUMENTO' | translate }}</span> <span
               class="label_error"
               *ngIf="erroresRegistroManual.tipoDocumento=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-          <select id="typeOfDocument" [(ngModel)]="user.guest.fastcheckin.typeOfDocument"
+          <select disabled="true" id="typeOfDocument" [(ngModel)]="user.guest.fastcheckin.typeOfDocument"
             (ngModelChange)="cambiarTipoDocumento($event)">
             <option *ngFor="let option of tiposDocumentos.opciones; let i = index" [ngValue]="option.id"
               [selected]="option.id==fastcheckin.typeOfDocument">
               {{option.name}} </option>
           </select>
+        </div>
+        <div class="item identifier" *ngIf="fastcheckin.typeOfDocument=='E'">
+          <label for="identifier"><span>{{ 'HUESPED.REGISTRO_MANUAL.NUM_IDENTIFICACION' | translate }}</span> <span
+              class="label_error"
+              *ngIf="erroresRegistroManual.numIdentificacion=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
+          <input id="identifier" type="text"
+            class="{{erroresRegistroManual.numIdentificacion || fastcheckin.documento=='' ? 'error' : ''}}"
+            [(ngModel)]="fastcheckin.documento" (ngModelChange)="modificaCampoRegistroManual('numIdentificacion')" />
         </div>
         <div class="item identifier" *ngIf="user.guest.fastcheckin.typeOfDocument=='D'">
           <label for="identifier"><span>{{ 'HUESPED.REGISTRO_MANUAL.NUM_IDENTIFICACION' | translate }}</span> <span
@@ -293,7 +313,8 @@
             [(ngModel)]="fastcheckin.passport.identifier"
             (ngModelChange)="modificaCampoRegistroManual('numIdentificacion')" />
         </div>
-        <div class="item date_exp">
+        <!-- En el caso de tarjeta de empleado de iberdrola no se escribirá la fecha de expedición -->
+        <div class="item date_exp" *ngIf="fastcheckin.typeOfDocument!='E'">
           <label for="date_exp"><span>{{ 'HUESPED.REGISTRO_MANUAL.EXPEDICION' | translate }}</span> <span
               class="label_error"
               *ngIf="erroresRegistroManual.fechaExpedicion=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
@@ -336,7 +357,8 @@
 
           <label for="sex"><span>{{ 'HUESPED.REGISTRO_MANUAL.SEXO' | translate }}</span> <span class="label_error"
               *ngIf="erroresRegistroManual.sexo=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-          <select id="sex" [(ngModel)]="fastcheckin.sex" (ngModelChange)="cambiarSexo($event)">
+          <select id="sex" class="{{erroresRegistroManual.sexo || fastcheckin.sex =='' ? 'error' : ''}}"
+            [(ngModel)]="fastcheckin.sex" (ngModelChange)="cambiarSexo($event)">
             <option *ngFor="let option of tiposSexo.opciones" [ngValue]="option.id">
               {{option.name}} </option>
           </select>

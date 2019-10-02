@@ -498,6 +498,7 @@ page-modal-edit-huesped {
       -webkit-flex-direction: column;
       font-family: "fontbecheckin";
       width: 100%;
+      height: 100%;
       .top {
         display: flex;
         display: -webkit-flex;
@@ -581,46 +582,66 @@ page-modal-edit-huesped {
         }
       }
       .opciones {
-        display: flex;
-        -webkit-display: flex;
-        justify-content: center;
-        padding-top: 10px;
         min-height: 135px;
-
-        .radio-group {
-          display: flex;
-          display: -webkit-flex;
-          flex-direction: column;
-          -webkit-flex-direction: column;
-          width: 100%;
+  
+        .select {
           padding-left: 20px;
           padding-right: 20px;
+          font-weight: bold;
+          color: #61a0a2;
           text-align: center;
-
+          width: 100%;
+  
+          .centrado {
+            color: #d4d4d4;
+            font-size: 20px;
+            font-weight: bold;
+            font-style: italic;
+            min-width: 100%;
+            border-bottom: 1px solid white;
+            border-top: 1px solid white;
+          }
+  
           .en_linea {
-            display: flex;
-            -webkit-display: flex;
+            display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+            display: -ms-flexbox; /* TWEENER - IE 10 */
+            display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+            display: flex; /* NEW, Spec - Firefox, Chrome, Opera */
             text-align: center;
             justify-content: center;
             padding-left: 20px;
             padding-right: 20px;
             padding-top: 5px;
-
+            margin-bottom: 20px;
+            border-bottom: 1px solid black;
+            border-top: 1px solid black;
+  
+            .item-radio-personalizado {
+              color: #141414;
+              margin-left: 20px;
+            }
+  
             .selected {
               background: #bcc5e22c;
               color: white;
-              display: flex;
-              display: -webkit-flex;
+              display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+              display: -ms-flexbox; /* TWEENER - IE 10 */
+              display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+              display: flex; /* NEW, Spec - Firefox, Chrome, Opera */
               border-radius: 5px;
             }
             .not_selected {
-              display: flex;
-              -webkit-display: flex;
+              display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+              display: -ms-flexbox; /* TWEENER - IE 10 */
+              display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+              display: flex; /* NEW, Spec - Firefox, Chrome, Opera */
             }
-
+  
             .radio {
-              display: flex;
-              -webkit-display: flex;
+              display: -webkit-box; /* OLD - iOS 6-, Safari 3.1-6, BB7 */
+              display: -ms-flexbox; /* TWEENER - IE 10 */
+              display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+              display: flex; /* NEW, Spec - Firefox, Chrome, Opera */
               text-align: center;
             }
           }
@@ -1001,13 +1022,13 @@ page-modal-edit-huesped {
               }
             }
             .error {
-              background-color: #ff000041;
+              background-color: #ff00009d;
               border: 1px solid #ff000041;
 
               &:focus {
                 font-size: 20px;
                 background-image: none;
-                background-color: #ff000041;
+                background-color: #ff0000a1;
                 border: 1px solid #cccccc;
               }
             }

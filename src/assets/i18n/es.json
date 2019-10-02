@@ -70,9 +70,11 @@
       "ELEGIR_TIPO_DOC": "Elija el tipo de documento",
       "DNI": "DNI",
       "PASAPORTE": "Pasaporte/NIE",
+      "EMPLEADO": "Tarjeta empleado",
       "ESCANER_FRONTAL": "Escanee la parte frontal del DNI",
       "ESCANER_TRASERO": "Escanee la parte trasera del DNI",
       "ESCANER_PASAPORTE": "Escanee su pasaporte",
+      "ESCANER_EMPLEADO": "Escanee su tarjeta de empleado",
       "FIRMA": "Firme aquí",
       "EMAIL": "Correo electrónico",
       "PRIVACIDAD": "Acepto la política de privacidad",
@@ -126,7 +128,7 @@
           "APELLIDO_2": "Segundo apellido (Sólo para españoles)",
           "NACIMIENTO": "Fecha de nacimiento",
           "SEXO": "Género",
-          "NACIONALIDAD": "Nacionalidad",
+          "NACIONALIDAD": "País",
           "PROVINCIA": "Provincia",
           "CONTINUAR": "Continuar"
       }

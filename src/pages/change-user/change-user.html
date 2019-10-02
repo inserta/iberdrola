@@ -6,9 +6,9 @@
       <div class="atras">
         <span *ngIf="paso > 1 && paso < 5 || paso == 0" (click)="atras()">{{ 'HUESPED.ATRAS' | translate }}</span>
       </div>
-      <!-- <div *ngIf="paso < 5" class="omitir" (click)="close()">
+      <div *ngIf="paso < 5" class="omitir" (click)="close()">
         {{ 'HUESPED.OMITIR' | translate }}
-      </div> -->
+      </div>
     </div>
 
     <!-- TITULO -->
@@ -213,14 +213,14 @@
     <div class="fin_texto" *ngIf="paso == 5">
       {{ 'HUESPED.TEXTO_FIN' | translate }}
     </div>
-    <div class="fin_recordatorio" *ngIf="paso == 5">
+    <div class="fin_recordatorio" *ngIf="paso == 5 && tipoDoc!='empleado'">
       {{ 'HUESPED.RECORDATORIO' | translate }}
     </div>
     <div class="fin_botones" *ngIf="paso == 5">
       <div class="fin_boton" (click)="close()">
         {{ 'HUESPED.FINALIZAR' | translate }}
       </div>
-      <div class="fin_boton_2" (click)="anotherGuest()">
+      <div class="fin_boton_2" (click)="anotherGuest()" *ngIf="tipoDoc!='empleado'">
         {{ 'HUESPED.NUEVO_REGISTRO' | translate }}
       </div>
     </div>
@@ -235,16 +235,15 @@
           <p>{{ 'HUESPED.REGISTRO_MANUAL.EXPLICACIONSUCCESS' | translate }}</p>
 
         </div>
-
-        <div class="item typeOfDocument">
-          <label for="typeOfDocument"><span>{{ 'HUESPED.REGISTRO_MANUAL.TIPO_DOCUMENTO' | translate }}</span> <span
+        
+        <div class="item identifier" *ngIf="fastcheckin.typeOfDocument=='E'">
+          <label for="identifier"><span>{{ 'HUESPED.REGISTRO_MANUAL.NUM_IDENTIFICACION' | translate }}</span> <span
               class="label_error"
-              *ngIf="erroresRegistroManual.tipoDocumento=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-          <select id="typeOfDocument" [(ngModel)]="fastcheckin.typeOfDocument"
-            (ngModelChange)="cambiarTipoDocumento($event)">
-            <option *ngFor="let option of tiposDocumentos.opciones" [ngValue]="option.id">
-              {{option.name}} </option>
-          </select>
+              *ngIf="erroresRegistroManual.numIdentificacion=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
+          <input id="identifier" type="text"
+            class="{{erroresRegistroManual.numIdentificacion || fastcheckin.documento=='' ? 'error' : ''}}"
+            [(ngModel)]="fastcheckin.documento"
+            (ngModelChange)="modificaCampoRegistroManual('numIdentificacion')" />
         </div>
         <div class="item identifier" *ngIf="fastcheckin.typeOfDocument=='D'">
           <label for="identifier"><span>{{ 'HUESPED.REGISTRO_MANUAL.NUM_IDENTIFICACION' | translate }}</span> <span
@@ -264,7 +263,9 @@
             [(ngModel)]="fastcheckin.passport.identifier"
             (ngModelChange)="modificaCampoRegistroManual('numIdentificacion')" />
         </div>
-        <div class="item date_exp">
+
+        <!-- En el caso de tarjeta de empleado de iberdrola no se escribirá la fecha de expedición -->
+        <div class="item date_exp" *ngIf="fastcheckin.typeOfDocument!='E'">
           <label for="date_exp"><span>{{ 'HUESPED.REGISTRO_MANUAL.EXPEDICION' | translate }}</span> <span
               class="label_error"
               *ngIf="erroresRegistroManual.fechaExpedicion=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
@@ -307,7 +308,7 @@
 
           <label for="sex"><span>{{ 'HUESPED.REGISTRO_MANUAL.SEXO' | translate }}</span> <span class="label_error"
               *ngIf="erroresRegistroManual.sexo=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-          <select id="sex" [(ngModel)]="fastcheckin.sex" (ngModelChange)="cambiarSexo($event)">
+          <select id="sex" class="{{erroresRegistroManual.sexo || fastcheckin.sex =='' ? 'error' : ''}}" [(ngModel)]="fastcheckin.sex" (ngModelChange)="cambiarSexo($event)">
             <option *ngFor="let option of tiposSexo.opciones" [ngValue]="option.id">
               {{option.name}} </option>
           </select>

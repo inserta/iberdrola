@@ -59,9 +59,11 @@
       "ELEGIR_TIPO_DOC": "Choose your document type",
       "DNI": "ID",
       "PASAPORTE": "Passport/NIE",
+      "EMPLEADO": "Employee card",
       "ESCANER_FRONTAL": "Scan your front ID",
       "ESCANER_TRASERO": "Scan your reverse ID",
       "ESCANER_PASAPORTE": "Scan your passport",
+      "ESCANER_EMPLEADO": "Scan your employee card",
       "FIRMA": "Sign here",
       "EMAIL": "Email",
       "PRIVACIDAD": "I accept the Privacy Policy",
@@ -115,7 +117,7 @@
           "APELLIDO_2": "Second surname (Only spanish people)",
           "NACIMIENTO": "Birthdate",
           "SEXO": "Gender",
-          "NACIONALIDAD": "Nationality",
+          "NACIONALIDAD": "Country",
           "PROVINCIA": "City",
           "CONTINUAR": "Continue"
       }
