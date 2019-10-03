@@ -461,6 +461,19 @@ export class ChangeUserPage {
           console.log('Error Subi  contador_subida_dni++;da frontal DNI');
         });
 
+    } else if (this.typeDocument == 'E') {
+
+      // SUBIDA PASAPORTE:
+      this.globalService.subirArchivo(this.photosEmpleadoSubida[0], 'huespedes/' + this.user.guest._id, 'empleado')
+        .then(ok => {
+          console.log('Subida tarjeta empleado con éxito');
+          this.linksSubidos.push({ enlace: 'huespedes/' + this.user.guest._id, nombre: 'empleado' + this.getExtension(this.photosEmpleadoSubida[0]) });
+          this.sendProfile(loading);
+        }).catch((error) => {
+          loading.dismiss();
+          console.log('Error subida tarjeta empleado');
+          //this.sendProfile();
+        });
     } else {
 
       // SUBIDA PASAPORTE:
@@ -1425,30 +1438,6 @@ export class ChangeUserPage {
         break;
     }
     this.fastcheckin.sex = "M";
-    //Generamos un código aleatorio de 20 caracteres.
-    let cadena = this.globalService.generarCadenaAleatoria(20);
-    //Subimos la imagen obtenida en la carpeta de errores con el nuevo código generado.
-    if (this.tipoDoc == "dni") {
-      this.globalService.subirArchivo(this.photosNifSubida[0], "huespedes/errores/dni", cadena).then(res => {
-        let asunto = "[TEST] Error al registrarse en webapp con DNI";
-        let mensaje = "<p>Se ha producido un error en el registro de un huésped</p><p>Se puede ver la imagen utilizada a través del siguiente enlace:</p><p>" + res + "</p>";
-        let mailTo = "javier@becheckin.com, amalia@becheckin.com";
-        //Enviamos informe de error.
-        this.service.sendGenericMail(asunto, mensaje, mailTo).then(res => {
-          console.log("informe de errores enviado.");
-        });
-      });
-    } else {
-      this.globalService.subirArchivo(this.photosPassportSubida[0], "huespedes/errores/passport", cadena).then(res => {
-        let asunto = "[TEST] Error al registrarse en webapp con Pasaporte";
-        let mensaje = "<p>Se ha producido un error en el registro de un huésped</p><p>Se puede ver la imagen utilizada a través del siguiente enlace:</p><p>" + res + "</p>";
-        let mailTo = "javier@becheckin.com, amalia@becheckin.com";
-        //Enviamos informe de error.
-        this.service.sendGenericMail(asunto, mensaje, mailTo).then(res => {
-          console.log("informe de errores enviado.");
-        });
-      });
-    }
   }
 
   guardarDatosManuales() {

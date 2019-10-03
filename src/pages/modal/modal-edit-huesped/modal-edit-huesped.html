@@ -84,6 +84,10 @@
           <img (click)="visualizaFoto(myImage3)" #myImage3 [src]="sanitize(photosPassport[0])" width="150" height="105"
             *ngIf="paso==11 && photosPassport[0]" />
         </div>
+        <div class="img " *ngIf="huesped.fastcheckin.typeOfDocument=='E'">
+          <img (click)="visualizaFoto(myImage4)" #myImage4 [src]="sanitize(photosEmpleado[0])" width="150" height="105"
+            *ngIf="paso==11 && photosEmpleado[0]" />
+        </div>
       </div>
     </div>
     <!-- CONFIRMACIÓN PASO 11 -->
