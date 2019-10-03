@@ -116,6 +116,7 @@
             "TARJETA_ANYO": "Año de caducidad",
             "TARJETA_MES": "Més de caducidad",
             "TARJETA_CVC": "CVC",
+            "TARJETA_NO_VALIDA": "No válida",
             "DNI": "DNI",
             "PASAPORTE": "PASAPORTE/NIE",
             "HOMBRE": "Hombre",

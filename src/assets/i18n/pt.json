@@ -250,6 +250,7 @@
             "TARJETA_ANYO": "Ano de vencimento",
             "TARJETA_MES": "Mês de vencimento",
             "TARJETA_CVC": "CVC",
+            "TARJETA_NO_VALIDA": "Cartão inválido",
             "DNI": "NIE",
             "PASAPORTE": "PASSAPORTO",
             "HOMBRE": "Homem",

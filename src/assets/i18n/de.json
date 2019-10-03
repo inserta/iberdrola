@@ -250,6 +250,7 @@
             "TARJETA_ANYO": "Ablaufjahr",
             "TARJETA_MES": "Ablaufmonat",
             "TARJETA_CVC": "CVC",
+            "TARJETA_NO_VALIDA": "Ungültige Karte",
             "DNI": "ID",
             "PASAPORTE": "REISEPASS",
             "HOMBRE": "Männlich",

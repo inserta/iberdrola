@@ -1534,19 +1534,21 @@ export class ChangeUserPage {
       this.erroresRegistroManual.nacionalidad = "obligatorio";
       result = false;
     }
-    if (!this.fastcheckin.tarjeta.numero && this.fastcheckin.typeOfDocument != "E") {
-      this.erroresRegistroManual.tarjeta_numero = "obligatorio";
-      result = false;
+    if (this.fastcheckin.tarjeta.numero && this.fastcheckin.typeOfDocument != "E") {
+      if(!this.validarTarjeta(this.fastcheckin.tarjeta.numero)){
+        this.erroresRegistroManual.tarjeta_numero = "no_valida";
+        result = false;
+      }
     }
-    if (!this.fastcheckin.tarjeta.mes && this.fastcheckin.typeOfDocument != "E") {
+    if (this.fastcheckin.tarjeta.numero && !this.fastcheckin.tarjeta.mes && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.tarjeta_mes = "obligatorio";
       result = false;
     }
-    if (!this.fastcheckin.tarjeta.anyo && this.fastcheckin.typeOfDocument != "E") {
+    if (this.fastcheckin.tarjeta.numero && !this.fastcheckin.tarjeta.anyo && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.tarjeta_anyo = "obligatorio";
       result = false;
     }
-    if (!this.fastcheckin.tarjeta.cvc && this.fastcheckin.typeOfDocument != "E") {
+    if (this.fastcheckin.tarjeta.numero && !this.fastcheckin.tarjeta.cvc && this.fastcheckin.typeOfDocument != "E") {
       this.erroresRegistroManual.tarjeta_cvc = "obligatorio";
       result = false;
     }
@@ -1623,6 +1625,11 @@ export class ChangeUserPage {
         break;
       case "tarjeta_numero":
         this.erroresRegistroManual.tarjeta_numero = "";
+        if(!this.fastcheckin.tarjeta.numero){
+          this.erroresRegistroManual.tarjeta_anyo = "";
+          this.erroresRegistroManual.tarjeta_mes = "";
+          this.erroresRegistroManual.tarjeta_cvc = "";
+        }
         break;
       case "tarjeta_anyo":
         this.erroresRegistroManual.tarjeta_anyo = "";
@@ -1662,5 +1669,34 @@ export class ChangeUserPage {
   resetFile(id) {
     let input: any = document.getElementById(id);
     input.value = null;
+  }
+  
+  validarTarjeta(numero_tarjeta) {
+    let cadena = numero_tarjeta.toString();
+    cadena = cadena.replace(/ /g, "")
+    let longitud = cadena.length;
+    let cifra = null;
+    let cifra_cad = null;
+    let suma = 0;
+    for (let i = 0; i < longitud; i += 2) {
+      cifra = parseInt(cadena.charAt(i)) * 2;
+      if (cifra > 9) {
+        cifra_cad = cifra.toString();
+        cifra = parseInt(cifra_cad.charAt(0)) +
+          parseInt(cifra_cad.charAt(1));
+      }
+      suma += cifra;
+    }
+    for (let i = 1; i < longitud; i += 2) {
+      suma += parseInt(cadena.charAt(i));
+    }
+
+    let numDigitos = longitud == 0 || longitud == 16;
+
+    if ((suma % 10) == 0 && numDigitos) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

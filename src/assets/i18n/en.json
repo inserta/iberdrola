@@ -104,6 +104,7 @@
             "TARJETA_ANYO": "Expiration year",
             "TARJETA_MES": "Expiration month",
             "TARJETA_CVC": "CVC",
+            "TARJETA_NO_VALIDA": "Invalid card",
             "DNI": "ID",
             "PASAPORTE": "PASSPORT/NIE",
             "HOMBRE": "Male",

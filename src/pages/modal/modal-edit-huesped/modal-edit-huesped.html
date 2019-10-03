@@ -385,42 +385,42 @@
           </ion-item>
           <ion-item>
             <div class="item_tarjeta tarjeta_numero">
-              <label for="tarjeta"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_NUMERO' | translate }}</span> <span
+              <label for="tarjeta_numero"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_NUMERO' | translate }}</span> <span
                   class="label_error"
-                  *ngIf="erroresRegistroManual.tarjeta_numero=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-              <input id="tarjeta" type="text"
-                class="{{(erroresRegistroManual.tarjeta_numero || fastcheckin.tarjeta.numero=='') ? 'error' : ''}}"
+                  *ngIf="erroresRegistroManual.tarjeta_numero=='no_valida'">{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_NO_VALIDA' | translate }}</span></label>
+              <input id="tarjeta_numero" type="number"
+                class="{{(erroresRegistroManual.tarjeta_numero) ? 'error' : ''}}"
                 [(ngModel)]="fastcheckin.tarjeta.numero"
                 (ngModelChange)="modificaCampoRegistroManual('tarjeta_numero')" />
             </div>
           </ion-item>
           <ion-item>
             <div class="item_tarjeta tarjeta_anyo">
-              <label for="tarjeta"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_ANYO' | translate }}</span> <span
+              <label for="tarjeta_anyo"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_ANYO' | translate }}</span> <span
                   class="label_error"
                   *ngIf="erroresRegistroManual.tarjeta_anyo=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-              <input id="tarjeta" type="number"
-                class="{{(erroresRegistroManual.tarjeta_anyo || fastcheckin.tarjeta.anyo==null) ? 'error' : ''}}"
+              <input id="tarjeta_anyo" type="number"
+                class="{{(erroresRegistroManual.tarjeta_anyo) ? 'error' : ''}}"
                 [(ngModel)]="fastcheckin.tarjeta.anyo" (ngModelChange)="modificaCampoRegistroManual('tarjeta_anyo')" />
             </div>
           </ion-item>
           <ion-item>
             <div class="item_tarjeta tarjeta_mes">
-              <label for="tarjeta"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_MES' | translate }}</span> <span
+              <label for="tarjeta_mes"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_MES' | translate }}</span> <span
                   class="label_error"
                   *ngIf="erroresRegistroManual.tarjeta_mes=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-              <input id="tarjeta" type="number"
-                class="{{(erroresRegistroManual.tarjeta_mes || fastcheckin.tarjeta.mes==null) ? 'error' : ''}}"
+              <input id="tarjeta_mes" type="number"
+                class="{{(erroresRegistroManual.tarjeta_mes) ? 'error' : ''}}"
                 [(ngModel)]="fastcheckin.tarjeta.mes" (ngModelChange)="modificaCampoRegistroManual('tarjeta_mes')" />
             </div>
           </ion-item>
           <ion-item>
             <div class="item_tarjeta tarjeta_cvc">
-              <label for="tarjeta"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_CVC' | translate }}</span> <span
+              <label for="tarjeta_cvc"><span>{{ 'HUESPED.REGISTRO_MANUAL.TARJETA_CVC' | translate }}</span> <span
                   class="label_error"
                   *ngIf="erroresRegistroManual.tarjeta_cvc=='obligatorio'">{{ 'HUESPED.REGISTRO_MANUAL.OBLIGATORIO' | translate }}</span></label>
-              <input id="tarjeta" type="number"
-                class="{{(erroresRegistroManual.tarjeta_cvc || fastcheckin.tarjeta.cvc==null) ? 'error' : ''}}"
+              <input id="tarjeta_cvc" type="number"
+                class="{{(erroresRegistroManual.tarjeta_cvc) ? 'error' : ''}}"
                 [(ngModel)]="fastcheckin.tarjeta.cvc" (ngModelChange)="modificaCampoRegistroManual('tarjeta_cvc')" />
             </div>
           </ion-item>

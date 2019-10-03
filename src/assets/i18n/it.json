@@ -249,6 +249,7 @@
             "TARJETA_ANYO": "Anno di scadenza",
             "TARJETA_MES": "Mese di scadenza",
             "TARJETA_CVC": "CVC",
+            "TARJETA_NO_VALIDA": "Non valido",
             "DNI": "NIE",
             "PASAPORTE": "PASSPORTO",
             "HOMBRE": "Maschio",

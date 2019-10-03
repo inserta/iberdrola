@@ -250,6 +250,7 @@
             "TARJETA_ANYO": "Année d'expiration",
             "TARJETA_MES": "Mois d'expiration",
             "TARJETA_CVC": "CVC",
+            "TARJETA_NO_VALIDA": "Carte invalide",
             "DNI": "CNI",
             "PASAPORTE": "PASSPORT",
             "HOMBRE": "Mâle",
