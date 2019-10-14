@@ -12,7 +12,7 @@ import { Http, Headers } from "@angular/http";
 
 import { Events } from 'ionic-angular';
 import { StorageService } from './service.storage';
-import { DatosDniFrontal } from '../models/others.model';
+import { DatosDocumento } from '../models/others.model';
 
 
 @Injectable()
@@ -608,15 +608,19 @@ export class ServiceAPI extends AbstractService {
 			});
 	}
 
-	public crearOcrDniTrasero(text, datosDniFrontal: DatosDniFrontal) {
+	public crearOcrDniTrasero(text, datosDocumento: DatosDocumento) {
 
 		let body = {
 			text: text,
-			nombre: datosDniFrontal.nombre,
-			apellido1: datosDniFrontal.apellido1,
-			apellido2: datosDniFrontal.apellido2,
-			documento: datosDniFrontal.documento,
-			pais: datosDniFrontal.pais
+			nombre: datosDocumento.nombre,
+			apellido1: datosDocumento.apellido1,
+			apellido2: datosDocumento.apellido2,
+			documento: datosDocumento.documento,
+			pais: datosDocumento.pais,
+			nacimiento: datosDocumento.nacimiento,
+			genero: datosDocumento.sexo,
+			expedicion: datosDocumento.expedicion,
+			tipoDocumento: datosDocumento.tipoDocumento
 		}
 
 		return this.makePost('https://booking.becheckin.com/ocr/dni/trasero', body)

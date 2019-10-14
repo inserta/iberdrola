@@ -21,7 +21,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import moment from 'moment';
 import { GlobalService } from './../../../app/services/globalService';
-import { ErroresFormularioRegistro, PasoAnterior, DatosDniFrontal, DatosDniTrasero, DatosPasaporte, DatosEmpleado } from './../../../app/models/others.model';
+import { ErroresFormularioRegistro, PasoAnterior, DatosDocumento, DatosEmpleado } from './../../../app/models/others.model';
 
 /**
  * Generated class for the ModalImagePage page.
@@ -39,8 +39,6 @@ export class ModalEditHuesped {
 
   users: any[];
   private signature: string;
-  private typeDocument: string = 'D';  //Tipo documento DNI,  P para pasaporte
-
 
   public dataUpdate: boolean = false;
   private loginForm: FormGroup;
@@ -84,9 +82,7 @@ export class ModalEditHuesped {
   guestCopy: Guest;
   actualGuestCopy: any = [];
 
-  datosDniFrontal: DatosDniFrontal;
-  datosDniTrasero: DatosDniTrasero;
-  datosPasaporte: DatosPasaporte;
+  datosDocumento: DatosDocumento;
   datosEmpleado: DatosEmpleado;
 
   @ViewChild('sigpad') sigpad: SignaturePad;
@@ -223,31 +219,16 @@ export class ModalEditHuesped {
 
 
   private inicializaDatosHuesped() {
-    this.datosDniFrontal = new DatosDniFrontal();
-    this.datosDniFrontal.nombre = "";
-    this.datosDniFrontal.pais = "";
-    this.datosDniFrontal.apellido1 = "";
-    this.datosDniFrontal.apellido2 = "";
 
-    this.datosDniTrasero = new DatosDniTrasero();
-    this.datosDniTrasero.nombre = "";
-    this.datosDniTrasero.pais = "";
-    this.datosDniTrasero.apellido1 = "";
-    this.datosDniTrasero.apellido2 = "";
-    this.datosDniTrasero.documento = "";
-    this.datosDniTrasero.expedicion = "";
-    this.datosDniTrasero.nacimiento = "";
-    this.datosDniTrasero.sexo = "";
-
-    this.datosPasaporte = new DatosPasaporte();
-    this.datosPasaporte.nombre = "";
-    this.datosPasaporte.pais = "";
-    this.datosPasaporte.apellido1 = "";
-    this.datosPasaporte.apellido2 = "";
-    this.datosPasaporte.documento = "";
-    this.datosPasaporte.expedicion = "";
-    this.datosPasaporte.nacimiento = "";
-    this.datosPasaporte.sexo = "";
+    this.datosDocumento = new DatosDocumento();
+    this.datosDocumento.nombre = "";
+    this.datosDocumento.pais = "";
+    this.datosDocumento.apellido1 = "";
+    this.datosDocumento.apellido2 = "";
+    this.datosDocumento.documento = "";
+    this.datosDocumento.expedicion = "";
+    this.datosDocumento.nacimiento = "";
+    this.datosDocumento.sexo = "";
   }
 
   // En caso de cancelar en medio del proceso de edición conserva los datos iniciales del huesped sin modificar
@@ -481,8 +462,6 @@ export class ModalEditHuesped {
     // PASAPORTE
 
 
-    let promises = [];
-    let contador_subida_dni = 0;
     this.linksSubidos = [];
 
 
@@ -490,20 +469,20 @@ export class ModalEditHuesped {
     if (this.subir_imagenes) {
 
       // PARA SELECCIÓN DE DNI:
-      if (this.typeDocument == 'D') {
+      if (this.user.guest.fastcheckin.typeOfDocument == 'D' || this.user.guest.fastcheckin.typeOfDocument == 'I') {
 
         // SUBIDA PARTE TRASERA DNI:
 
         this.globalService.subirArchivo(this.photosNifSubida[0], 'huespedes/' + this.user.guest._id, 'dni_trasero')
           .then(ok => {
-            console.log('Subido trasero con éxito DNI');
+            console.log('Subido DNI trasero con éxito');
             this.linksSubidos.push({ enlace: 'huespedes/' + this.user.guest._id, nombre: 'dni_trasero' + this.getExtension(this.photosNifSubida[0]) });
 
 
             // SUBIDA PARTE FRONTAL DNI:
             this.globalService.subirArchivo(this.photosNifSubida[1], 'huespedes/' + this.user.guest._id, 'dni_frontal')
               .then(ok => {
-                console.log('Subido trasera con éxito DNI');
+                console.log('Subido DNI frontal con éxito');
                 this.linksSubidos.push({ enlace: 'huespedes/' + this.user.guest._id, nombre: 'dni_frontal' + this.getExtension(this.photosNifSubida[1]) });
                 this.sendProfile(loading);
               }).catch((error) => {
@@ -512,10 +491,10 @@ export class ModalEditHuesped {
               });
           }).catch((error) => {
             loading.dismiss();
-            console.log('Error Subi  contador_subida_dni++;da frontal DNI');
+            console.log('Error Subida frontal DNI');
           });
 
-      } else if(this.typeDocument == 'E') {
+      } else if (this.user.guest.fastcheckin.typeOfDocument == 'E') {
 
         // SUBIDA PASAPORTE:
         this.globalService.subirArchivo(this.photosEmpleadoSubida[0], 'huespedes/' + this.user.guest._id, 'empleado')
@@ -562,7 +541,6 @@ export class ModalEditHuesped {
     this.existFastcheckin = false;
     this.fastcheckinSuccess = false;
     this.user.guest.fastcheckin.caducate = this.user.keysRooms[0].start;
-    this.user.guest.fastcheckin.typeOfDocument = this.typeDocument;
     this.user.guest.fastcheckin._id = this.user.guest._id;
     this.user.guest.fastcheckin.reserve = this.user.keysRooms[0].downloadCode;
     this.user.guest.fastcheckin.email = this.email;
@@ -845,38 +823,74 @@ export class ModalEditHuesped {
             //console.log(result._body);
             let res = JSON.parse(result._body).responses[0].fullTextAnnotation;
             if (res) {
-              //this.typeDocument = res.responses[0].fullTextAnnotation.text.indexOf('passport') >= 0 || res.responses[0].fullTextAnnotation.text.indexOf('PASSPORT') >= 0 ? 'P' : 'D';
 
               if (this.tipoDoc == 'dni') {
                 console.log('dni')
-                this.serviceAPI.crearOcrDniTrasero(res.text, this.datosDniFrontal).then(respuestaDniTrasero => {
-                  this.typeDocument = 'D';
-                  if (!respuestaDniTrasero.error) {
-                    this.datosDniTrasero = respuestaDniTrasero;
-                  }
+                this.serviceAPI.crearOcrDniTrasero(res.text, this.datosDocumento).then(respuestaDniTrasero => {
+                  this.datosDocumento = respuestaDniTrasero;
                   this.recognizeDNIText(loading);
+                }).catch(error => {
+                  console.log(error);
+                  loading.dismiss();
+                  this.errorScan = this.errorScan + 1;
+                  if (this.errorScan >= 2) {
+                    this.activarFormularioManual("Fallo en OCR DNI");
+                  } else {
+                    let alert = this.alertCtrl.create({
+                      title: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TITULO"),
+                      subTitle: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TEXTO"),
+                      buttons: ['OK']
+                    });
+                    alert.present();
+                  }
                 });
               } else if (this.tipoDoc == 'empleado') {
                 console.log('empleado');
                 this.serviceAPI.crearOcrEmpleado(res.text).then(respuestaEmpleado => {
-                  this.typeDocument = 'E';
                   if (!respuestaEmpleado.error) {
                     this.datosEmpleado = respuestaEmpleado;
                   }
                   this.recognizeEmpleadoText(loading);
+                }).catch(error => {
+                  console.log(error);
+                  loading.dismiss();
+                  this.errorScan = this.errorScan + 1;
+                  if (this.errorScan >= 2) {
+                    this.activarFormularioManual("Fallo en OCR Empleado");
+                  } else {
+                    let alert = this.alertCtrl.create({
+                      title: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TITULO"),
+                      subTitle: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TEXTO"),
+                      buttons: ['OK']
+                    });
+                    alert.present();
+                  }
                 });
               } else {
                 this.serviceAPI.crearOcrPasaporte(res.text).then(respuestaPasaporte => {
-                  this.typeDocument = 'P';
-                  this.datosPasaporte = respuestaPasaporte;
+                  this.datosDocumento = respuestaPasaporte;
                   this.recognizePassportText(loading);
+                }).catch(error => {
+                  console.log(error);
+                  loading.dismiss();
+                  this.errorScan = this.errorScan + 1;
+                  if (this.errorScan >= 2) {
+                    this.activarFormularioManual("Fallo en OCR pasaporte");
+                  } else {
+                    let alert = this.alertCtrl.create({
+                      title: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TITULO"),
+                      subTitle: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TEXTO"),
+                      buttons: ['OK']
+                    });
+                    alert.present();
+                  }
                 });
               }
             } else {
               loading.dismiss()
               this.errorScan = this.errorScan + 1;
               if (this.errorScan >= 2) {
-                this.activarFormularioManual();
+                this.activarFormularioManual("Fallo al reconocer texto");
               } else {
                 let alert = this.alertCtrl.create({
                   title: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TITULO"),
@@ -891,7 +905,7 @@ export class ModalEditHuesped {
             console.log(err);
             this.errorScan = this.errorScan + 1;
             if (this.errorScan >= 2) {
-              this.activarFormularioManual();
+              this.activarFormularioManual("Fallo en Google");
             } else {
               let alert = this.alertCtrl.create({
                 title: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TITULO"),
@@ -902,11 +916,12 @@ export class ModalEditHuesped {
             }
           });
         } catch (error) {
+          loading.dismiss();
           console.log(error);
           //this.showToast("FASTCHECKIN.NO_SCANNER");
           this.errorScan = this.errorScan + 1;
           if (this.errorScan >= 2) {
-            this.activarFormularioManual();
+            this.activarFormularioManual("Fallo general");
           } else {
             let alert = this.alertCtrl.create({
               title: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TITULO"),
@@ -921,7 +936,7 @@ export class ModalEditHuesped {
       console.log(error);
       this.errorScan = this.errorScan + 1;
       if (this.errorScan >= 2) {
-        this.activarFormularioManual();
+        this.activarFormularioManual("Fallo en loading");
       } else {
         let alert = this.alertCtrl.create({
           title: this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TITULO"),
@@ -950,19 +965,27 @@ export class ModalEditHuesped {
             if (res) {
 
               this.serviceAPI.crearOcrDniFrontal(res.text).then(respuestaDniFrontal => {
-                this.datosDniFrontal = respuestaDniFrontal;
-
-                this.recognizeFrontalDNIText(loading);
+                if (respuestaDniFrontal) {
+                  if (respuestaDniFrontal.error) {
+                    this.mostrarAlertaDocumentacionErronea(respuestaDniFrontal.error, loading);
+                  } else {
+                    this.datosDocumento = respuestaDniFrontal;
+                    this.recognizeFrontalDNIText(loading);
+                  }
+                } else {
+                  this.datosDocumento = new DatosDocumento();
+                  this.recognizeFrontalDNIText(loading);
+                }
               });
             } else {
-              this.avanzaDNIDelantero("Error: Fallo al reconocer el texto de la imagen");
+              this.avanzaDNIDelantero("Error: Fallo al reconocer el texto de la imagen", loading);
             }
           }, err => {
-            this.avanzaDNIDelantero(err);
+            this.avanzaDNIDelantero(err, loading);
           });
         } catch (error) {
           console.log(error);
-          this.avanzaDNIDelantero(error);
+          this.avanzaDNIDelantero(error, loading);
         }
       });
     } catch (error) {
@@ -970,8 +993,13 @@ export class ModalEditHuesped {
     }
   }
 
-  avanzaDNIDelantero(mensaje?) {
-    console.log(mensaje);
+  avanzaDNIDelantero(mensaje?, loading?) {
+    if (loading) {
+      loading.dismiss();
+    }
+    if (mensaje) {
+      console.log(mensaje);
+    }
     if (this.paso != 3) {
       let pasoAnterior = new PasoAnterior();
       pasoAnterior.paso = this.paso;
@@ -982,26 +1010,50 @@ export class ModalEditHuesped {
     }
   }
 
+  private mostrarAlertaDocumentacionErronea(tipoDocError, loading) {
+    loading.dismiss();
+    if (tipoDocError == 'pasaporte') {
+      this.alerta(this.translate.instant("HUESPED.DOCUMENTO_ERROR.TITULO"), this.translate.instant("HUESPED.DOCUMENTO_ERROR.DESCRIPCION_PASAPORTE"));
+    } else if (tipoDocError == 'NO_INFO_GENERAL') {
+      this.errorScan = this.errorScan + 1;
+      if (this.errorScan >= 2) {
+        this.activarFormularioManual("Fallo en OCR Pasaporte");
+      } else {
+        this.alerta(this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TITULO"), this.translate.instant("HUESPED.ERROR_RECO_IMAGEN_TEXTO"));
+      }
+    } else {
+      this.alerta(this.translate.instant("HUESPED.DOCUMENTO_ERROR.TITULO"), this.translate.instant("HUESPED.DOCUMENTO_ERROR.DESCRIPCION_GENERAL"));
+    }
+  }
+
   private recognizeFrontalDNIText(loading) {
 
-    if (this.datosDniFrontal.apellido1) {
-      this.user.guest.fastcheckin.surnameOne = this.datosDniFrontal.apellido1;
+    if (this.datosDocumento.apellido1) {
+      this.user.guest.fastcheckin.surnameOne = this.datosDocumento.apellido1;
     }
-    if (this.datosDniFrontal.apellido2) {
-      this.user.guest.fastcheckin.surnameTwo = this.datosDniFrontal.apellido2;
+    if (this.datosDocumento.apellido2) {
+      this.user.guest.fastcheckin.surnameTwo = this.datosDocumento.apellido2;
     }
-    if (this.datosDniFrontal.nombre) {
-      this.user.guest.fastcheckin.name = this.datosDniFrontal.nombre;
+    if (this.datosDocumento.nombre) {
+      this.user.guest.fastcheckin.name = this.datosDocumento.nombre;
     }
-    if (this.datosDniFrontal.pais) {
-      this.user.guest.fastcheckin.nationality = this.datosDniFrontal.pais;
+    if (this.datosDocumento.pais) {
+      this.user.guest.fastcheckin.nationality = this.datosDocumento.pais;
     }
-    if (this.datosDniFrontal.documento) {
-      this.user.guest.fastcheckin.dni.identifier = this.datosDniFrontal.documento;
+    if (this.datosDocumento.documento) {
+      this.user.guest.fastcheckin.dni.identifier = this.datosDocumento.documento;
+    }
+    if (this.datosDocumento.tipoDocumento) {
+      this.user.guest.fastcheckin.typeOfDocument = this.datosDocumento.tipoDocumento;
+    }
+    if (this.datosDocumento.sexo) {
+      this.user.guest.fastcheckin.sex = this.datosDocumento.sexo;
+    }
+    if (this.datosDocumento.nacimiento) {
+      this.user.guest.fastcheckin.birthday = this.datosDocumento.nacimiento;
     }
 
-    loading.dismiss();
-    this.avanzaDNIDelantero("Analizado correctamente");
+    this.avanzaDNIDelantero("Analizado correctamente", loading);
   }
 
 
@@ -1226,85 +1278,39 @@ export class ModalEditHuesped {
     //*/
   }
 
-  private getUserData(): any {
-    this.apiComponents.createLoading().then((loading: Loading) => {
-      loading.present();
-      this.storageService.getUserData()
-        .then((response) => {
-          this.user = response;
-          console.log('Get User Data: ', this.user)
-          if (this.user != null) {
-            this.clienteActual = this.user.keysRooms[0].client._id
-            if (this.user.guest.fastcheckin.name != '') {
-              this.first = false;
-              console.log('first: ', this.first, ' ', this.code)
-            }
-
-            this.sex = this.user.guest.fastcheckin ? this.user.guest.fastcheckin.sex : '';
-            this.typeDocument = this.user.guest.fastcheckin ? this.user.guest.fastcheckin.typeOfDocument : '';
-            this.loginForm = this.formBuilder.group({
-              /*
-              name: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.name : '', Validators.compose([Validators.required])],
-              lastname: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.surnameOne : '', Validators.compose([Validators.required])],
-              birthday: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.birthday : '', Validators.compose([Validators.required])],
-              email: [this.user.guest.fastcheckin && this.user.guest.fastcheckin.email && !this.user.guest.fastcheckin.email.includes('@code.com') ? this.user.guest.fastcheckin.email : '', Validators.compose([Validators.required])],
-              reserve: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.reserve : '', Validators.compose([Validators.required])],
-              expedition: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.date_exp : '', Validators.compose([Validators.required])],
-              caducate: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.caducate : '', Validators.compose([Validators.required])],
-              document: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.dni.identifier ? this.user.guest.fastcheckin.dni.identifier : (this.user.guest.fastcheckin.passport.identifier ? this.user.guest.fastcheckin.passport.identifier : '') : '', Validators.compose([Validators.required, DNIValidator.isValid])],
-              nationality: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.nationality : '', Validators.compose([Validators.required])]
-  
-              */
-              name: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.name : '', Validators.compose([Validators.required])],
-              lastname: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.surnameOne : '', Validators.compose([Validators.required])],
-              birthday: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.birthday : '', Validators.compose([Validators.required])],
-              email: [this.user.guest.fastcheckin && this.user.guest.fastcheckin.email && !this.user.guest.fastcheckin.email.includes('@code.com') ? this.user.guest.fastcheckin.email : '', Validators.compose([Validators.required])],
-              //date_exp: [this.user.guest.fastcheckin.date_exp ? this.user.guest.fastcheckin.date_exp : '', Validators.compose([Validators.required])],
-              reserve: [this.code, Validators.compose([Validators.required])],
-              expedition: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.date_exp : '', Validators.compose([Validators.required])],
-              //caducate: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.caducate : '', Validators.compose([Validators.required])],
-              caducate: [this.user.keysRooms[0].caducate],
-              document: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.dni.identifier ? this.user.guest.fastcheckin.dni.identifier : (this.user.guest.fastcheckin.passport.identifier ? this.user.guest.fastcheckin.passport.identifier : '') : '', Validators.compose([Validators.required, DNIValidator.isValid])],
-              nationality: [this.user.guest.fastcheckin ? this.user.guest.fastcheckin.nationality : '', Validators.compose([Validators.required])]
-
-            });
-          } else {
-            let count = 1;
-            this.email = this.code + count + "@code.com";
-            this.password = this.code + count + "@code.com";
-            this.name = this.code + count + "@code.com";
-            this.loginUser();
-          }
-          loading.dismiss();
-        }).catch((error) => {
-          loading.dismiss();
-        });
-    });
-  }
-
   private recognizePassportText(loading: Loading) {
-    this.user.guest.fastcheckin.name = this.datosPasaporte.nombre;
-    this.user.guest.fastcheckin.surnameOne = this.datosPasaporte.apellido1;
-    this.user.guest.fastcheckin.surnameTwo = this.datosPasaporte.apellido2;
-    this.user.guest.fastcheckin.passport.identifier = this.datosPasaporte.documento;
-    this.user.guest.fastcheckin.sex = this.datosPasaporte.sexo;
-    this.user.guest.fastcheckin.birthday = this.datosPasaporte.nacimiento;
-    this.user.guest.fastcheckin.date_exp = this.datosPasaporte.expedicion;
-    this.user.guest.fastcheckin.nationality = this.datosPasaporte.pais;
     loading.dismiss();
+    this.user.guest.fastcheckin.name = this.datosDocumento.nombre;
+    this.user.guest.fastcheckin.surnameOne = this.datosDocumento.apellido1;
+    this.user.guest.fastcheckin.surnameTwo = this.datosDocumento.apellido2;
+    this.user.guest.fastcheckin.passport.identifier = this.datosDocumento.documento;
+    this.user.guest.fastcheckin.sex = this.datosDocumento.sexo;
+    this.user.guest.fastcheckin.birthday = this.datosDocumento.nacimiento;
+    this.user.guest.fastcheckin.date_exp = this.datosDocumento.expedicion;
+    this.user.guest.fastcheckin.nationality = this.datosDocumento.pais;
+    if (this.datosDocumento.tipoDocumento) {
+      this.user.guest.fastcheckin.typeOfDocument = this.datosDocumento.tipoDocumento;
+    } else {
+      this.user.guest.fastcheckin.typeOfDocument = 'P';
+    }
     this.comprobardatos();
   }
 
   private recognizeDNIText(loading: Loading) {
-    this.user.guest.fastcheckin.name = this.datosDniTrasero.nombre;
-    this.user.guest.fastcheckin.surnameOne = this.datosDniTrasero.apellido1;
-    this.user.guest.fastcheckin.surnameTwo = this.datosDniTrasero.apellido2;
-    this.user.guest.fastcheckin.dni.identifier = this.datosDniTrasero.documento;
-    this.user.guest.fastcheckin.sex = this.datosDniTrasero.sexo;
-    this.user.guest.fastcheckin.birthday = this.datosDniTrasero.nacimiento;
-    this.user.guest.fastcheckin.date_exp = this.datosDniTrasero.expedicion;
-    this.user.guest.fastcheckin.nationality = this.datosDniTrasero.pais;
     loading.dismiss();
+    this.user.guest.fastcheckin.name = this.datosDocumento.nombre;
+    this.user.guest.fastcheckin.surnameOne = this.datosDocumento.apellido1;
+    this.user.guest.fastcheckin.surnameTwo = this.datosDocumento.apellido2;
+    this.user.guest.fastcheckin.dni.identifier = this.datosDocumento.documento;
+    this.user.guest.fastcheckin.sex = this.datosDocumento.sexo;
+    this.user.guest.fastcheckin.birthday = this.datosDocumento.nacimiento;
+    this.user.guest.fastcheckin.date_exp = this.datosDocumento.expedicion;
+    this.user.guest.fastcheckin.nationality = this.datosDocumento.pais;
+    if (this.datosDocumento.tipoDocumento) {
+      this.user.guest.fastcheckin.typeOfDocument = this.datosDocumento.tipoDocumento;
+    } else {
+      this.user.guest.fastcheckin.typeOfDocument = 'D';
+    }
     this.comprobardatos();
   }
 
@@ -1313,6 +1319,11 @@ export class ModalEditHuesped {
     this.user.guest.fastcheckin.name = this.datosEmpleado.nombre;
     this.user.guest.fastcheckin.surnameOne = this.datosEmpleado.apellidos;
     this.user.guest.fastcheckin.documento = this.datosEmpleado.documento;
+    if (this.datosDocumento.tipoDocumento) {
+      this.user.guest.fastcheckin.typeOfDocument = this.datosDocumento.tipoDocumento;
+    } else {
+      this.user.guest.fastcheckin.typeOfDocument = 'E';
+    }
     loading.dismiss();
     this.comprobardatos();
 
@@ -1442,7 +1453,7 @@ export class ModalEditHuesped {
 
   confirmaImagenes() {
     // Volcamos los datos obtenidos en el fastcheckin en caso de éxito:
-    this.activarFormularioManual();
+    this.activarFormularioManual("sin_error");
     this.vuelcaDatosFastcheckin();
     if (this.tipoDoc == 'pasaporte') {
       this.progreso = "66\%";
@@ -1475,7 +1486,7 @@ export class ModalEditHuesped {
   }
 
 
-  activarFormularioManual() {
+  activarFormularioManual(texto) {
     //Vamos al paso especial para mostrar formulario manual.
     let pasoAnterior = new PasoAnterior();
     pasoAnterior.paso = this.paso;
@@ -1485,22 +1496,9 @@ export class ModalEditHuesped {
     this.progreso = "50\%";
     this.fastcheckin = new FastCheckin();
     this.erroresRegistroManual = new ErroresFormularioRegistro();
-    switch (this.tipoDoc) {
-      case 'dni':
-        this.fastcheckin.typeOfDocument = 'D';
-        break;
-      case 'pasaporte':
-        this.fastcheckin.typeOfDocument = 'P';
-        break;
-      case 'empleado':
-        this.fastcheckin.typeOfDocument = 'E';
-        break;
-
-      default:
-        this.fastcheckin.typeOfDocument = 'D';
-        break;
-    }
-    this.fastcheckin.sex = "M";
+    this.fastcheckin.typeOfDocument = this.user.guest.fastcheckin.typeOfDocument;
+    this.fastcheckin.sex = this.user.guest.fastcheckin.sex ? this.user.guest.fastcheckin.sex : "M";
+    //Suprimimos el envío de informes de error en esta aplicación por el momento.
   }
 
   guardarDatosManuales() {
@@ -1601,7 +1599,7 @@ export class ModalEditHuesped {
       result = false;
     }
     if (this.fastcheckin.tarjeta.numero && this.fastcheckin.typeOfDocument != "E") {
-      if(!this.validarTarjeta(this.fastcheckin.tarjeta.numero)){
+      if (!this.validarTarjeta(this.fastcheckin.tarjeta.numero)) {
         this.erroresRegistroManual.tarjeta_numero = "no_valida";
         result = false;
       }
@@ -1692,7 +1690,7 @@ export class ModalEditHuesped {
         break;
       case "tarjeta_numero":
         this.erroresRegistroManual.tarjeta_numero = "";
-        if(!this.fastcheckin.tarjeta.numero){
+        if (!this.fastcheckin.tarjeta.numero) {
           this.erroresRegistroManual.tarjeta_anyo = "";
           this.erroresRegistroManual.tarjeta_mes = "";
           this.erroresRegistroManual.tarjeta_cvc = "";
