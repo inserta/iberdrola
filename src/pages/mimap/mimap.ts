@@ -414,7 +414,7 @@ export class MimapPage {
 
   connectToDevice(tipo, procede) {
 
-    
+
     this.esChina = false;
     this.dispositivoActual = tipo;
     let mensaje = '';
@@ -465,7 +465,7 @@ export class MimapPage {
 
         } else if ((this.codeUno == "$$$$$") && (procede == 0)) {
           console.log('abriendo por Platillo')
-          this.openPlatillo(loading, this.name); 
+          this.openPlatillo(loading, this.name);
 
         } else {
           console.log('aqui');
@@ -478,31 +478,31 @@ export class MimapPage {
 
   openPlatillo(loading, name) {
     this.sapi.accesstoken().subscribe(token => {
-        let mtoken = token.access_token;
-        //this.toastr.success('Token obtenido con éxito', 'Obtener Token');
-        
-        console.log(mtoken);
-        // abrimos platillo
-        this.sapi.openChina(mtoken, this.name).subscribe(res => {
-          console.log('res: ', res);
-          loading.dismiss();
-    
-    
+      let mtoken = token.access_token;
+      //this.toastr.success('Token obtenido con éxito', 'Obtener Token');
+
+      console.log(mtoken);
+      // abrimos platillo
+      this.sapi.openChina(mtoken, this.name).subscribe(res => {
+        console.log('res: ', res);
+        loading.dismiss();
+
+
       }, err => {
-          //this.toastr.warning('Error obtener codigo', 'Obtener Código');
-          console.log(err.message);
-          loading.dismiss()
-      });
-  
-  
-    }, err => {
-        //this.toastr.warning('Error obtener token', 'Obtener Ticket');
+        //this.toastr.warning('Error obtener codigo', 'Obtener Código');
         console.log(err.message);
+        loading.dismiss()
+      });
+
+
+    }, err => {
+      //this.toastr.warning('Error obtener token', 'Obtener Ticket');
+      console.log(err.message);
     });
   }
 
 
-  
+
 
   private checkBluetooth(loading, device) {
     /*
@@ -1591,16 +1591,12 @@ export class MimapPage {
           '<div id="infoWindowButtonComoLlegar"><h6><a href="#">' + this.translate.instant('MAP.COMOLLEGAR') + '</a></h6></div>' +
           link_url;
 
-
-
-
         const infoWindow = new google.maps.InfoWindow({
           content: infoWindowContent,
           closeOnMapClick: true,
           pointer: true,
           shadow: true,
         });
-
 
         marker.addListener('click', () => {
           this.info_name = item.nombre
@@ -1644,8 +1640,6 @@ export class MimapPage {
         this.city = item._id
       });
 
-  
-
       let target = new google.maps.LatLng(item["lat"] - 0.01, item["lng"])
       this.mapBrowser.panTo(target);
 
@@ -1653,10 +1647,6 @@ export class MimapPage {
     });
 
    } */
-
-
-
-
 
   }
 
@@ -1743,9 +1733,6 @@ export class MimapPage {
     });
   }
 
-
-
-
   followBanner() {
     this.slider.freeMode = true;
     this.slider.autoplay = 300;
@@ -1754,11 +1741,9 @@ export class MimapPage {
     this.slider.startAutoplay();
   }
 
-
   stopBanner() {
     this.slider.stopAutoplay();
   }
-
 
   // Recupera los as actividades del banner:
   getAllActivitiesBanner() {
@@ -1885,19 +1870,8 @@ export class MimapPage {
 
   // Muestra un PDF de la ciudad mostrada en el mapa, Ingles o Español según idioma:
   showInfoPDF() {
-    let arrayguiasexistentes = ["57", "2", "35", "80", "81", "83", "109", "110", "119", "120", "52"];
-
     // Comprobamos si tiene pdf en la lista de ciudades existentes:
-    if (arrayguiasexistentes.indexOf(this.idPdfCiudad) !== -1) {
-      this.navCtrl.push('pdf', { "archivo": this.idPdfCiudad, animate: true, direction: 'backward' });
-    } else {
-      this.alerta(this.translate.instant('MAP.TITULO_GUIA'), this.translate.instant('MAP.DESCRIPCION_GUIA'));
-    }
-
-
-
-
-
+    this.navCtrl.push('pdf', { "archivo": "0", animate: true, direction: 'backward' });
   }
 
   closeLight(indice) {
