@@ -271,6 +271,11 @@
             "NACIONALIDAD": "Nacionalidade",
             "PROVINCIA": "Província",
             "CONTINUAR": "Continue"
+        },
+        "DOCUMENTO_ERROR" : {
+            "TITULO": "Foi detectado um erro",
+            "DESCRIPCION_GENERAL": "O documento digitalizado não pôde ser processado corretamente. Por favor, tente novamente.",
+            "DESCRIPCION_PASAPORTE": "Por favor, selecione o passaporte como o tipo de documento antes de digitalizar."
         }
     }
 }

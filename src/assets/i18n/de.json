@@ -271,6 +271,11 @@
             "NACIONALIDAD": "Staatsangehörigkeit",
             "PROVINCIA": "Provinz",
             "CONTINUAR": "Fortsetzen"
+        },
+        "DOCUMENTO_ERROR" : {
+            "TITULO": "Ein Fehler wurde festgestellt",
+            "DESCRIPCION_GENERAL": "Das gescannte Dokument konnte nicht korrekt verarbeitet werden. Bitte versuche es erneut.",
+            "DESCRIPCION_PASAPORTE": "Bitte wählen Sie vor dem Scannen den Reisepass als Dokumenttyp aus."
         }
     }
 }

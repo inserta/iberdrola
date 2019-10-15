@@ -229,6 +229,7 @@ export class ModalEditHuesped {
     this.datosDocumento.expedicion = "";
     this.datosDocumento.nacimiento = "";
     this.datosDocumento.sexo = "";
+    this.datosDocumento.tipoDocumento = "";
   }
 
   // En caso de cancelar en medio del proceso de edición conserva los datos iniciales del huesped sin modificar

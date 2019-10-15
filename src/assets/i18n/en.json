@@ -125,6 +125,11 @@
             "NACIONALIDAD": "Country",
             "PROVINCIA": "City",
             "CONTINUAR": "Continue"
+        },
+        "DOCUMENTO_ERROR" : {
+            "TITULO": "An error was detected",
+            "DESCRIPCION_GENERAL": "The scanned document could not be processed correctly. Please try again.",
+            "DESCRIPCION_PASAPORTE": "Please, select the passport as the type of document before scanning."
         }
     },
     "PAGO": {

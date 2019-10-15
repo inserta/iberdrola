@@ -271,6 +271,11 @@
             "NACIONALIDAD": "Nationalité",
             "PROVINCIA": "Province",
             "CONTINUAR": "Continuer"
+        },
+        "DOCUMENTO_ERROR": {
+            "TITULO": "Une erreur a été détectée",
+            "DESCRIPCION_GENERAL": "Le document numérisé n'a pas pu être traité correctement. Veuillez réessayer.",
+            "DESCRIPCION_PASAPORTE": "Veuillez sélectionner le passeport comme type de document avant de numériser."
         }
     }
 }

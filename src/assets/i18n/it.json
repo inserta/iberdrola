@@ -270,6 +270,11 @@
             "NACIONALIDAD": "Nazionalità",
             "PROVINCIA": "Provincia",
             "CONTINUAR": "Continua"
+        },
+        "DOCUMENTO_ERROR" : {
+            "TITULO": "È stato rilevato un errore",
+            "DESCRIPCION_GENERAL": "Il documento acquisito non può essere elaborato correttamente. Per favore riprova.",
+            "DESCRIPCION_PASAPORTE": "Seleziona il passaporto come tipo di documento prima della scansione."
         }
     }
 }
